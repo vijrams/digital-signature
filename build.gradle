@@ -1,0 +1,135 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+		springVersion = '4.3.7.RELEASE'
+	}
+	repositories {
+		mavenLocal()
+		maven{
+			url "http://passport-nexus/nexus/content/groups/public/"
+		}
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+configurations {
+    jaxws
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'org.springframework.boot'
+
+repositories {
+	//mavenLocal()
+	maven{
+		url "http://passport-nexus/nexus/content/groups/public/"
+	}
+	mavenCentral()
+}
+
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+
+task wsimport {
+    ext.destDir = file("${projectDir}/src/main/java")
+    System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
+	System.setProperty('javax.net.ssl.keyStore', 'tw_keystore_prod.pfx')
+	System.setProperty('javax.net.ssl.keyStorePassword', 'datacert')
+	System.setProperty('javax.net.ssl.trustStore', 'tw_truststore_prod.jks')
+	System.setProperty('javax.net.ssl.trustStorePassword', 'datacert')
+    doLast {
+        ant {
+            sourceSets.main.output.classesDir.mkdirs()
+            destDir.mkdirs()
+            taskdef(name: 'wsimport',
+                    classname: 'com.sun.tools.ws.ant.WsImport',
+                    classpath: configurations.jaxws.asPath
+            )
+            wsimport(keep: true,
+                    destdir: sourceSets.main.output.classesDir,
+                    sourcedestdir: destDir,
+                    extension: "true",
+                    verbose: "false",
+                    quiet: "false",
+                    package: "com.datacert.ebilling.digsig.api.trustweaver",
+                    xnocompile: "true",
+                    wsdl: 'https://tseiod.trustweaver.com/ts/svs.asmx?wsdl') {
+                xjcarg(value: "-XautoNameResolution")
+            }
+        }
+    }
+}
+
+compileJava.dependsOn wsimport
+
+bootRepackage {
+	mainClass = 'com.datacert.ebilling.digsig.api.DigitalSignatureServiceApplication'
+}
+
+task dist(type: Copy, dependsOn: bootRepackage) {
+    def execArgs = System.getProperty('exec.args')
+    def args = execArgs?.split()
+    def env = execArgs?.split()
+    if(args)
+        env = args[0]
+    println "Environment -----------> $env"
+	def distDir = file ('build/dist/')
+	distDir.mkdir()
+	from 'build/libs'
+	from './'
+	from 'src/main/resources'
+	into 'build/dist'
+	include "nssm.exe"
+	include "application.yml"
+	include "keystore.jks"
+    include "tw_keystore_stg.pfx"
+	include "tw_truststore_stg.jks"
+    include "logback.xml"
+    if(env){
+        println "copying config files for $env"
+        from "config/$env"
+        into 'build/dist'
+        include "application.yml"
+        include "keystore.jks"
+        include "tw_keystore_stg.pfx"
+        include "tw_truststore_stg.jks"
+    }
+	include "${project.name}-${project.version}.jar"
+	rename("${project.name}-${project.version}.jar","DigSigService-${project.version}.jar")
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: "http://passport-nexus/nexus/content/repositories/passport-nexus-snapshots") {
+				authentication(userName: "deployment", password: "datacert")
+			}
+			println "Uploading DigSigService-$version to Nexus Repo"
+			pom.version = "$version"
+			pom.artifactId = "DigSigService"
+			pom.groupId = "com.datacert.collaborationportal.digsig"
+		}
+	}
+}
+dependencies {
+	jaxws 'com.sun.xml.ws:jaxws-tools:2.1.4'
+	compile "org.codehaus.groovy:groovy-all:2.4.10"
+	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+	compile "org.springframework.boot:spring-boot-actuator-docs:${springBootVersion}"
+	compile "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
+	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+	compile "org.springframework:spring-webmvc:${springVersion}"
+	compile "com.microsoft:sqljdbc4:4.0"
+	compile "org.apache.httpcomponents:httpclient:4.4"
+	compile "commons-lang:commons-lang:2.6"
+	compile "commons-io:commons-io:2.4"
+	testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+}
+

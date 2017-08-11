@@ -1,7 +1,7 @@
-package com.wk.elms.ebilling.digsig.api
+package com.wkelms.ebilling.digsig.api
 
-import com.wk.elms.ebilling.digsig.api.service.DigSigException
-import com.wk.elms.ebilling.digsig.api.service.DigSigService
+import com.wkelms.ebilling.digsig.api.service.DigSigException
+import com.wkelms.ebilling.digsig.api.service.DigSigService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ByteArrayResource

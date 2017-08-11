@@ -26,7 +26,7 @@ apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 
 repositories {
-	//mavenLocal()
+	mavenLocal()
 	maven{
 		url "http://passport-nexus/nexus/content/groups/public/"
 	}
@@ -58,7 +58,7 @@ task wsimport {
                     extension: "true",
                     verbose: "false",
                     quiet: "false",
-                    package: "com.wk.elms.ebilling.digsig.api.trustweaver",
+                    package: "com.wkelms.ebilling.digsig.api.trustweaver",
                     xnocompile: "true",
                     wsdl: 'https://tseiod.trustweaver.com/ts/svs.asmx?wsdl') {
                 xjcarg(value: "-XautoNameResolution")
@@ -70,7 +70,7 @@ task wsimport {
 compileJava.dependsOn wsimport
 
 bootRepackage {
-	mainClass = 'com.wk.elms.ebilling.digsig.api.DigitalSignatureServiceApplication'
+	mainClass = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
 }
 
 task dist(type: Copy, dependsOn: bootRepackage) {

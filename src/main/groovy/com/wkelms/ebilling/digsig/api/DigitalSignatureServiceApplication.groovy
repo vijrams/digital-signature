@@ -1,4 +1,4 @@
-package com.datacert.ebilling.digsig.api
+package com.wkelms.ebilling.digsig.api
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -7,7 +7,7 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
-import com.wk.elms.ebilling.digsig.api.CustomHttpsSSLConfig
+import com.wkelms.ebilling.digsig.api.CustomHttpsSSLConfig
 
 @SpringBootApplication
 public class DigitalSignatureServiceApplication {

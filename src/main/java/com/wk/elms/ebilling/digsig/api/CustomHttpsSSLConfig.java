@@ -1,4 +1,4 @@
-package com.datacert.ebilling.digsig.api;
+package com.wk.elms.ebilling.digsig.api;
 
 /**
  * Created by ranadeep.palle on 4/19/2017.
@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.stream.Stream;
-
+ 
 public class CustomHttpsSSLConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomHttpsSSLConfig.class);

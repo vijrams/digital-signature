@@ -1,10 +1,10 @@
-package com.datacert.ebilling.digsig.api.service
+package com.wk.elms.ebilling.digsig.api.service
 
-import com.datacert.ebilling.digsig.api.dao.SharedocDao
-import com.datacert.ebilling.digsig.api.trustweaver.SignRequest
-import com.datacert.ebilling.digsig.api.trustweaver.SwitchService
-import com.datacert.ebilling.digsig.api.trustweaver.ValidateArchiveRequest
-import com.datacert.ebilling.digsig.api.trustweaver.ValidateRequest
+import com.wk.elms.ebilling.digsig.api.dao.SharedocDao
+import com.wk.elms.ebilling.digsig.api.trustweaver.SignRequest
+import com.wk.elms.ebilling.digsig.api.trustweaver.SwitchService
+import com.wk.elms.ebilling.digsig.api.trustweaver.ValidateArchiveRequest
+import com.wk.elms.ebilling.digsig.api.trustweaver.ValidateRequest
 import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

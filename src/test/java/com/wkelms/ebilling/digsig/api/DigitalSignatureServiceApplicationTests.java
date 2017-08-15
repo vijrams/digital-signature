@@ -1,4 +1,4 @@
-package com.datacert.ebilling.digsig.api;
+package com.wkelms.ebilling.digsig.api;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

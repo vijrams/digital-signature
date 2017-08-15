@@ -38,12 +38,24 @@ sourceCompatibility = 1.8
 
 
 task wsimport {
+	def profile = project.hasProperty('env') ? env : 'test'
+	def wsdlURL = "https://tseiod-test.trustweaver.com/ts/svs.asmx?wsdl"
+	def keyStore = "src/main/resources/tw_keystore_test.pfx"
+	def trustStore = "src/main/resources/tw_truststore_test.jks"
+	if (profile == 'prod'){
+		wsdlURL = wsdlURL.replace("tseiod-test","tseiod")
+		keyStore = keyStore.replace("_test","_prod")
+		trustStore = trustStore.replace("_test","_prod")
+	}
     ext.destDir = file("${projectDir}/src/main/java")
     System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
-	System.setProperty('javax.net.ssl.keyStore', 'assets/tw_keystore_prod.pfx')
+	System.setProperty('javax.net.ssl.keyStore', keyStore)
+//	System.setProperty('javax.net.ssl.keyStore', 'assets/tw_keystore_prod.pfx')
 	System.setProperty('javax.net.ssl.keyStorePassword', 'datacert')
-	System.setProperty('javax.net.ssl.trustStore', 'assets/tw_truststore_prod.jks')
+	System.setProperty('javax.net.ssl.trustStore', trustStore)
+//	System.setProperty('javax.net.ssl.trustStore', 'assets/tw_truststore_prod.jks')
 	System.setProperty('javax.net.ssl.trustStorePassword', 'datacert')
+	println "----> "+System.getProperty('javax.net.ssl.keyStore')
     doLast {
         ant {
             sourceSets.main.output.classesDir.mkdirs()
@@ -60,7 +72,7 @@ task wsimport {
                     quiet: "false",
                     package: "com.wkelms.ebilling.digsig.api.trustweaver",
                     xnocompile: "true",
-                    wsdl: 'https://tseiod.trustweaver.com/ts/svs.asmx?wsdl') {
+                    wsdl: wsdlURL) {
                 xjcarg(value: "-XautoNameResolution")
             }
         }
@@ -74,33 +86,26 @@ bootRepackage {
 }
 
 task dist(type: Copy, dependsOn: bootRepackage) {
-    def execArgs = System.getProperty('exec.args')
-    def args = execArgs?.split()
-    def env = execArgs?.split()
-    if(args)
-        env = args[0]
-    println "Environment -----------> $env"
+	def profile = project.hasProperty('env') ? env : 'test'
+	def keyStore = "tw_keystore_test.pfx"
+	def trustStore = "tw_truststore_test.jks"
+	if (profile == 'prod'){
+		keyStore = "tw_keystore_prod.pfx"
+		trustStore = "tw_truststore_prod.jks"
+	}
+    println "Environment -----------> $profile"
 	def distDir = file ('build/dist/')
 	distDir.mkdir()
 	from 'build/libs'
-	from './'
 	from 'src/main/resources'
 	into 'build/dist'
 	include "nssm.exe"
+	include "start_service.bat"
 	include "application.yml"
 	include "keystore.jks"
-    include "tw_keystore_stg.pfx"
-	include "tw_truststore_stg.jks"
+    include "$keyStore"
+	include "$trustStore"
     include "logback.xml"
-    if(env){
-        println "copying config files for $env"
-        from "config/$env"
-        into 'build/dist'
-        include "application.yml"
-        include "keystore.jks"
-        include "tw_keystore_stg.pfx"
-        include "tw_truststore_stg.jks"
-    }
 	include "${project.name}-${project.version}.jar"
 	rename("${project.name}-${project.version}.jar","DigSigService-${project.version}.jar")
 }

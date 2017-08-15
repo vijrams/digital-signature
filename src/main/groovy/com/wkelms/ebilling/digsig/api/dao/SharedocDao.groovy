@@ -1,6 +1,6 @@
-package com.datacert.ebilling.digsig.api.dao
+package com.wkelms.ebilling.digsig.api.dao
 
-import com.datacert.ebilling.digsig.api.service.DigSigException
+import com.wkelms.ebilling.digsig.api.service.DigSigException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate

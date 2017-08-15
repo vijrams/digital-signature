@@ -50,12 +50,9 @@ task wsimport {
     ext.destDir = file("${projectDir}/src/main/java")
     System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
 	System.setProperty('javax.net.ssl.keyStore', keyStore)
-//	System.setProperty('javax.net.ssl.keyStore', 'assets/tw_keystore_prod.pfx')
 	System.setProperty('javax.net.ssl.keyStorePassword', 'datacert')
 	System.setProperty('javax.net.ssl.trustStore', trustStore)
-//	System.setProperty('javax.net.ssl.trustStore', 'assets/tw_truststore_prod.jks')
 	System.setProperty('javax.net.ssl.trustStorePassword', 'datacert')
-	println "----> "+System.getProperty('javax.net.ssl.keyStore')
     doLast {
         ant {
             sourceSets.main.output.classesDir.mkdirs()
@@ -101,13 +98,14 @@ task dist(type: Copy, dependsOn: bootRepackage) {
 	into 'build/dist'
 	include "nssm.exe"
 	include "start_service.bat"
-	include "application.yml"
+	include "application.yml.rename"
 	include "keystore.jks"
     include "$keyStore"
 	include "$trustStore"
     include "logback.xml"
 	include "${project.name}-${project.version}.jar"
 	rename("${project.name}-${project.version}.jar","DigSigService-${project.version}.jar")
+	rename("application.yml.rename","application.yml")
 }
 
 uploadArchives {

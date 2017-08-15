@@ -34,7 +34,7 @@ public class SharedocDao {
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
         try {
-            String sql = "INSERT INTO digital_signatures (sender_id, recipient_id, reference_id, requested_at,invoice_count,sender_country,recipient_country,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO einvoice.dbo.digital_signatures (sender_id, recipient_id, reference_id, requested_at,invoice_count,sender_country,recipient_country,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             jdbcTemplate.update(sql, senderLawId, clientLawId, referenceId, (new Date()).toTimestamp(), invoiceCount, senderCountry, clientCountry, (new Date()).toTimestamp());
             transactionManager.commit(txStatus);
         }
@@ -50,7 +50,7 @@ public class SharedocDao {
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
         try {
             logger.info("updating digsig record ${referenceId}")
-            String sql = "update digital_signatures set signing_result=?, signing_details=?, signature_count=?, signed_at=? where reference_id =?"
+            String sql = "update einvoice.dbo.digital_signatures set signing_result=?, signing_details=?, signature_count=?, signed_at=? where reference_id =?"
             jdbcTemplate.update(sql, signing_result, signing_details, signature_count, (new Date()).toTimestamp(), referenceId);
             transactionManager.commit(txStatus);
         } catch (Exception e) {

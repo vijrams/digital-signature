@@ -2,6 +2,7 @@ package com.wkelms.ebilling.digsig.api
 
 import com.wkelms.ebilling.digsig.api.service.DigSigException
 import com.wkelms.ebilling.digsig.api.service.DigSigService
+import groovy.json.JsonBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ByteArrayResource
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import javax.xml.ws.soap.SOAPFaultException
 
 @RestController
 public class DigSigController {
@@ -45,16 +47,30 @@ public class DigSigController {
 
         def signedInvoiceBytes
         try {
+
             signedInvoiceBytes = digSigService.sign(invoice.bytes,senderCountry.trim(),clientCountry.trim(),referenceId.trim(),senderLawId.trim(),clientLawId.trim(),invoiceCount)
             resource =  new ByteArrayResource(signedInvoiceBytes);
 
-        } catch(DigSigException dse){
-            logger.error("Message = "+dse.message +" stackTrace = "+dse.stackTrace)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch(SOAPFaultException se){
+            def json = createJson(se)
+            logger.error("Message = "+se.message +" stackTrace = "+se.stackTrace)
+            return  ResponseEntity.unprocessableEntity()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(json);
         }
-        catch (IOException e) {
+        catch(DigSigException dse){
+            logger.error("Message = "+dse.message +" stackTrace = "+dse.stackTrace)
+            def json = createJson(dse)
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(json);
+        }
+        catch (Exception e) {
             logger.error("Message = "+e.message +" stackTrace = "+e.stackTrace)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            def json = createJson(e)
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(json);
         }
 
         ResponseEntity
@@ -63,6 +79,12 @@ public class DigSigController {
                 .contentLength(signedInvoiceBytes.length)
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
+    }
+
+    private String createJson(def se) {
+        def json = new JsonBuilder()
+        def root = json error: se.message
+        json.toString()
     }
 
     @RequestMapping(path = "/validate", method = RequestMethod.POST)

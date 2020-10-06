@@ -5,12 +5,13 @@ import com.wkelms.ebilling.digsig.api.trustweaver.SignRequest
 import com.wkelms.ebilling.digsig.api.trustweaver.SwitchService
 import com.wkelms.ebilling.digsig.api.trustweaver.ValidateArchiveRequest
 import com.wkelms.ebilling.digsig.api.trustweaver.ValidateRequest
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import groovy.json.JsonBuilder
+import java.io.ByteArrayOutputStream
 /**
  * Created by ranadeep.palle on 4/17/2017.
  */
@@ -56,10 +57,15 @@ class DigSigService {
         def switchService = new SwitchService();
         def switchServiceSoap = switchService.getSwitchServiceSoap()
         def signRequest =  new SignRequest()
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+        outputStream.write("Content-Type: text/plain; charset=utf-8\r\n\r\n".getBytes());
+        outputStream.write(invoiceBytes);
+
         signRequest.inputType           = 'GENERIC'
         signRequest.jobType             = 'CADESA'
         signRequest.outputType          = 'SMIME'
-        signRequest.document            = invoiceBytes
+        signRequest.document            = outputStream.toByteArray()
         signRequest.senderTag           = iso3CountryCodeToIso2CountryCode(senderCountry)
         signRequest.receiverTag         = iso3CountryCodeToIso2CountryCode(clientCountry)
         signRequest.nrOfItems           = invoiceCount

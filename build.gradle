@@ -1,88 +1,76 @@
-buildscript {
-	ext {
-		springBootVersion = '1.5.2.RELEASE'
-		springVersion = '4.3.7.RELEASE'
-	}
-	repositories {
-		mavenLocal()
-		maven{
-			url "http://passport-nexus/nexus/content/groups/public/"
-		}
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+plugins {
+	id 'org.springframework.boot' version '2.3.2.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'groovy'
+	id "org.sonarqube" version "2.7.1"
+	id 'maven'
 }
 
-configurations {
-    jaxws
-}
-
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'org.springframework.boot'
+group = 'com.wkelms.ebilling.digsig.api'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '1.8'
 
 repositories {
 	mavenLocal()
-	maven{
-		url "http://passport-nexus/nexus/content/groups/public/"
-	}
 	mavenCentral()
+	maven{
+		url "https://nexus.wkelms.com/repository/public"
+	}
+
 }
 
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
+configurations {
+	jaxws
+}
 
+bootJar {
+	mainClassName = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
+	exclude ("*.jks")
+	exclude ("*.yml*")
+	exclude ("*.xml")
+	exclude ("*.exe")
+}
 
 task wsimport {
 	def profile = project.hasProperty('env') ? env : 'test'
+	println "profile $profile"
 	def wsdlURL = "https://tseiod-test.trustweaver.com/ts/svs.asmx?wsdl"
-	def keyStore = "src/main/resources/tw_keystore_test.pfx"
-	def trustStore = "src/main/resources/tw_truststore_test.jks"
+	def keyStore = "${projectDir}/src/main/resources/tw_keystore_test.pfx"
+	def trustStore = "${projectDir}/src/main/resources/tw_truststore_test.jks"
 	if (profile == 'prod'){
 		wsdlURL = wsdlURL.replace("tseiod-test","tseiod")
 		keyStore = keyStore.replace("_test","_prod")
 		trustStore = trustStore.replace("_test","_prod")
 	}
-    ext.destDir = file("${projectDir}/src/main/java")
-    System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
+	ext.destDir = file("${projectDir}/src/main/java")
+	System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
 	System.setProperty('javax.net.ssl.keyStore', keyStore)
 	System.setProperty('javax.net.ssl.keyStorePassword', 'datacert')
 	System.setProperty('javax.net.ssl.trustStore', trustStore)
 	System.setProperty('javax.net.ssl.trustStorePassword', 'datacert')
-    doLast {
-        ant {
-            sourceSets.main.output.classesDir.mkdirs()
-            destDir.mkdirs()
-            taskdef(name: 'wsimport',
-                    classname: 'com.sun.tools.ws.ant.WsImport',
-                    classpath: configurations.jaxws.asPath
-            )
-            wsimport(keep: true,
-                    destdir: sourceSets.main.output.classesDir,
-                    sourcedestdir: destDir,
-                    extension: "true",
-                    verbose: "false",
-                    quiet: "false",
-                    package: "com.wkelms.ebilling.digsig.api.trustweaver",
-                    xnocompile: "true",
-                    wsdl: wsdlURL) {
-                xjcarg(value: "-XautoNameResolution")
-            }
-        }
-    }
+	try {
+		doLast {
+			ant {
+				sourceSets.main.output.classesDirs.inits()
+				destDir.mkdirs()
+				taskdef(name: 'wsimport',
+						classname: 'com.sun.tools.ws.ant.WsImport',
+						classpath: configurations.jaxws.asPath
+				)
+				wsimport(keep: true,
+						sourcedestdir: 'src/main/java',
+						package: "com.wkelms.ebilling.digsig.api.trustweaver",
+						wsdl: wsdlURL) {
+					xjcarg(value: "-XautoNameResolution")
+				}
+			}
+		}
+	}catch(Exception ex) {
+		println ex
+	}
 }
 
-compileJava.dependsOn wsimport
-
-bootRepackage {
-	mainClass = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
-}
-
-task dist(type: Copy, dependsOn: bootRepackage) {
+task dist(type: Copy, dependsOn: bootJar) {
 	def profile = project.hasProperty('env') ? env : 'test'
 	def keyStore = "tw_keystore_test.pfx"
 	def trustStore = "tw_truststore_test.jks"
@@ -90,7 +78,7 @@ task dist(type: Copy, dependsOn: bootRepackage) {
 		keyStore = "tw_keystore_prod.pfx"
 		trustStore = "tw_truststore_prod.jks"
 	}
-    println "Environment -----------> $profile"
+	println "Environment -----------> $profile"
 	def distDir = file ('build/dist/')
 	distDir.mkdir()
 	from 'build/libs'
@@ -100,39 +88,65 @@ task dist(type: Copy, dependsOn: bootRepackage) {
 	include "start_service.bat"
 	include "application.yml.rename"
 	include "keystore.jks"
-    include "$keyStore"
+	include "$keyStore"
 	include "$trustStore"
-    include "logback.xml"
+	include "logback.xml"
 	include "${project.name}-${project.version}.jar"
 	rename("${project.name}-${project.version}.jar","DigSigService-${project.version}.jar")
 	rename("application.yml.rename","application.yml")
 }
 
+
 uploadArchives {
 	repositories {
 		mavenDeployer {
-			repository(url: "http://passport-nexus/nexus/content/repositories/passport-nexus-snapshots") {
+			repository(url: "https://nexus.wkelms.com/repository/cp-releases/") {
+				authentication(userName: "deployment", password: "datacert")
+			}
+			snapshotRepository(url: "https://nexus.wkelms.com/repository/cp-snapshots/") {
 				authentication(userName: "deployment", password: "datacert")
 			}
 			println "Uploading DigSigService-$version to Nexus Repo"
 			pom.version = "$version"
 			pom.artifactId = "DigSigService"
-			pom.groupId = "com.datacert.collaborationportal.digsig"
+			pom.groupId = "com.wkelms.ebilling.digsig"
 		}
 	}
 }
+
 dependencies {
 	jaxws 'com.sun.xml.ws:jaxws-tools:2.1.4'
-	compile "org.codehaus.groovy:groovy-all:2.4.10"
-	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
-	compile "org.springframework.boot:spring-boot-actuator-docs:${springBootVersion}"
-	compile "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
-	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-	compile "org.springframework:spring-webmvc:${springVersion}"
-	compile "com.microsoft:sqljdbc4:4.0"
-	compile "org.apache.httpcomponents:httpclient:4.4"
-	compile "commons-lang:commons-lang:2.6"
-	compile "commons-io:commons-io:2.4"
-	testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	compile group: 'com.sun.xml.ws', name: 'jaxws-tools', version: '2.1.4'
+	compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.10'
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+	compile group: 'commons-io', name: 'commons-io', version: '2.7'
+	compile group: 'com.microsoft.sqlserver', name: 'sqljdbc4', version: '4.0'
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 }
 
+sonarqube {
+	properties {
+		property "sonar.sourceEncoding", "UTF-8"
+		property "sonar.sources", "src"
+		property "sonar.exclusions", "src/test/groovy/**"
+	}
+}
+
+compileJava {
+	dependsOn wsimport
+	source wsimport.destDir
+}
+test {
+	useJUnitPlatform()
+}

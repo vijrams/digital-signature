@@ -19,7 +19,6 @@ plugins {
 	id 'org.springframework.boot' version '2.5.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'groovy'
-//	id 'maven'
 }
 
 version = '1.5.0'
@@ -36,26 +35,11 @@ repositories {
 configurations {
 	jaxws
 }
-/*
-bootJar {
-	mainClassName = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
-	exclude ("*.jks")
-	exclude ("*.yml*")
-	exclude ("*.xml")
-	exclude ("*.exe")
-}
 
 task wsimport {
-	def profile = project.hasProperty('env') ? env : 'test'
-	println "profile $profile"
-	def wsdlURL = "https://tseiod-test.trustweaver.com/ts/svs.asmx?wsdl"
-	def keyStore = "${projectDir}/src/main/resources/tw_keystore_test.pfx"
-	def trustStore = "${projectDir}/src/main/resources/tw_truststore_test.jks"
-	if (profile == 'prod'){
-		wsdlURL = wsdlURL.replace("tseiod-test","tseiod")
-		keyStore = keyStore.replace("_test","_prod")
-		trustStore = trustStore.replace("_test","_prod")
-	}
+	def wsdlURL = "https://twod-test.trustweaver.com/ts/svs.asmx?wsdl"
+	String keyStore = "${projectDir}/src/test/resources/tw_keystore_stag_2021.pfx"
+	String trustStore = "${projectDir}/src/test/resources/tw_truststore_stg.jks"
 	ext.destDir = file("${projectDir}/src/main/java")
 	System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
 	System.setProperty('javax.net.ssl.keyStore', keyStore)
@@ -73,6 +57,7 @@ task wsimport {
 				)
 				wsimport(keep: true,
 						sourcedestdir: 'src/main/java',
+						xnocompile: 'true',
 						package: "com.wkelms.ebilling.digsig.api.trustweaver",
 						wsdl: wsdlURL) {
 					xjcarg(value: "-XautoNameResolution")
@@ -83,7 +68,17 @@ task wsimport {
 		println ex
 	}
 }
+
+/*
+bootJar {
+	mainClassName = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
+	exclude ("*.jks")
+	exclude ("*.yml*")
+	exclude ("*.xml")
+	exclude ("*.exe")
+}
 */
+
 /*
 task dist(type: Copy, dependsOn: bootJar) {
 	def profile = project.hasProperty('env') ? env : 'test'
@@ -134,6 +129,8 @@ uploadArchives {
 
 
 dependencies {
+
+	jaxws 'com.sun.xml.ws:jaxws-tools:2.3.0'
 
 	implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.8'
 	implementation group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.8'

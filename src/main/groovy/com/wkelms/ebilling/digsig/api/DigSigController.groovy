@@ -1,84 +1,87 @@
 package com.wkelms.ebilling.digsig.api
 
-import com.wkelms.ebilling.digsig.api.service.DigSigException
+
 import com.wkelms.ebilling.digsig.api.service.DigSigService
 import groovy.json.JsonBuilder
-import org.slf4j.LoggerFactory
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ByteArrayResource
-import org.springframework.core.io.ClassPathResource
-import org.springframework.core.io.InputStreamResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.ServletRequestBindingException
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.context.request.WebRequest
+import org.springframework.web.multipart.MultipartException
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.support.MissingServletRequestPartException
+
 import javax.xml.ws.soap.SOAPFaultException
 
+@Slf4j
 @RestController
-public class DigSigController {
-    def logger = LoggerFactory.getLogger(this.class);
+class DigSigController {
+
     @Autowired
-    private DigSigService digSigService;
+    private DigSigService digSigService
+
     @RequestMapping(path = "getServiceInfo", method = RequestMethod.GET)
     public String getServiceInfo() {
         try {
         digSigService.getServiceInfo()
         } catch (IOException e) {
-            logger.error("Message = "+e.message +" stackTrace = "+e.stackTrace)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            log.error("Message = "+e.message +" stackTrace = "+e.stackTrace)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST)
         }
     }
 
     @RequestMapping(path = "/sign", method = RequestMethod.POST)
-    public ResponseEntity<Resource> sign(@RequestParam("invoice") MultipartFile invoice, @RequestParam("senderCountry") String senderCountry,@RequestParam("clientCountry") String clientCountry,@RequestParam("clientLawId") String clientLawId,@RequestParam("senderLawId") String senderLawId,@RequestParam("referenceId") String referenceId,@RequestParam("invoiceCount") Integer invoiceCount) {
-        logger.info("Signing Invoice for referenceId : ${referenceId}");
+    ResponseEntity<Resource> sign(@RequestParam("invoice") MultipartFile invoice,
+                                  @RequestParam("senderCountry") String senderCountry,
+                                  @RequestParam("clientCountry") String clientCountry,
+                                  @RequestParam("clientLawId") String clientLawId,
+                                  @RequestParam("senderLawId") String senderLawId,
+                                  @RequestParam("referenceId") String referenceId,
+                                  @RequestParam("invoiceCount") Integer invoiceCount) {
+        log.info("Signing Invoice for referenceId : ${referenceId}")
 
         ByteArrayResource resource
-        if (invoice.isEmpty()) {
-            logger.error("No Invoice Selected to Sign")
-            return new ResponseEntity("No Invoice Selected", HttpStatus.OK);
+        if (invoice?.isEmpty()) {
+            log.error("No Invoice Selected to Sign")
+            return new ResponseEntity('{"error": "Required request part \'invoice\' is not present"}', HttpStatus.BAD_REQUEST)
         }
 
-        def signedInvoiceBytes
         try {
+            def signedInvoiceBytes = digSigService.sign(invoice.bytes,senderCountry.trim(),clientCountry.trim(),referenceId.trim(),senderLawId.trim(),clientLawId.trim(),invoiceCount)
+            resource =  new ByteArrayResource(signedInvoiceBytes)
+            ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION)
+                    .contentLength(signedInvoiceBytes.length)
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .body(resource)
 
-            signedInvoiceBytes = digSigService.sign(invoice.bytes,senderCountry.trim(),clientCountry.trim(),referenceId.trim(),senderLawId.trim(),clientLawId.trim(),invoiceCount)
-            resource =  new ByteArrayResource(signedInvoiceBytes);
-
-        } catch(SOAPFaultException se){
+        }
+        catch(SOAPFaultException se){
             def json = createJson(se)
-            logger.error("Message = "+se.message +" stackTrace = "+se.stackTrace)
+            log.error("Message = "+se.message +" stackTrace = "+se.stackTrace)
             return  ResponseEntity.unprocessableEntity()
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(json);
+                    .body(json)
         }
-        catch(DigSigException dse){
-            logger.error("Message = "+dse.message +" stackTrace = "+dse.stackTrace)
-            def json = createJson(dse)
-            return ResponseEntity.badRequest()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(json);
-        }
-        catch (Exception e) {
-            logger.error("Message = "+e.message +" stackTrace = "+e.stackTrace)
+       catch (Exception e) {
+            log.error("Message = "+e.message +" stackTrace = "+e.stackTrace)
             def json = createJson(e)
             return ResponseEntity.badRequest()
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(json);
+                    .body(json)
         }
-
-        ResponseEntity
-                .ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION)
-                .contentLength(signedInvoiceBytes.length)
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(resource);
     }
 
     private String createJson(def se) {
@@ -87,51 +90,102 @@ public class DigSigController {
         json.toString()
     }
 
-    @RequestMapping(path = "/validate", method = RequestMethod.POST)
-    public String validate(@RequestParam("signedInvoice") MultipartFile signedInvoice, @RequestParam("senderCountry") String senderCountry,@RequestParam("clientCountry") String clientCountry) {
-
-        Resource file;
-        logger.info("Validating Signed Invoice ");
-        if (signedInvoice.isEmpty()) {
-            logger.error("No Signed Invoice Selected")
-            return new ResponseEntity("No Signed Invoice Selected", HttpStatus.BAD_REQUEST);
-        }
-
-        def resultJson
+    @RequestMapping(path = "/digital_signatures/validate", method = RequestMethod.POST, produces = MediaType.APPLICATION_XML_VALUE)
+    String validateLegacy(@RequestParam("file") MultipartFile signedInvoice,
+                          @RequestParam("sender_country") String senderCountry,
+                          @RequestParam("recipient_country") String clientCountry,
+                          @RequestParam("law_id") String lawId) {
+        log.info("Validating Signed Invoice -legacy")
         try {
-             resultJson = digSigService.validate(signedInvoice.bytes,senderCountry,clientCountry)
-
-        } catch(DigSigException dse){
-            logger.error("Message = "+dse.message +" stackTrace = "+dse.stackTrace)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            if (signedInvoice.isEmpty()) {
+                log.error("No Signed Invoice Selected")
+                throw new Exception("No Signed Invoice Selected")
+            }
+            def resp = digSigService.validate(signedInvoice.bytes,senderCountry,clientCountry,true)
+            resp
+        }catch (Exception e) {
+            digSigService.legacyResponse(null,"Unknown", e.message)
         }
-        catch (Exception e) {
-            logger.error("Message = "+e.message+" stackTrace = "+e.stackTrace)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(path = "/validate", method = RequestMethod.POST)
+    ResponseEntity validate(@RequestParam("signedInvoice") MultipartFile signedInvoice,
+                    @RequestParam("senderCountry") String senderCountry,
+                    @RequestParam("clientCountry") String clientCountry) {
+        log.info("Validating Signed Invoice ")
+        if (signedInvoice.isEmpty()) {
+            log.error("No Signed Invoice Selected")
+            return new ResponseEntity('{"error": "Required request part \'signedInvoice\' is not present"}', HttpStatus.BAD_REQUEST)
         }
 
+        try {
+            def resultJson = digSigService.validate(signedInvoice.bytes,senderCountry,clientCountry)
+            ResponseEntity
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(resultJson)
+
+        } catch (Exception e) {
+            log.error("Message = "+e.message+" stackTrace = "+e.stackTrace)
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(createJson(e))
+        }
+
+    }
+
+    @RequestMapping(path = "/digital_signatures/validate_archive", method = RequestMethod.POST, produces = MediaType.APPLICATION_XML_VALUE)
+    String validateArchiveLegacy(@RequestParam("file") MultipartFile signedInvoice) {
+        log.info("ValidateArchive Signed Invoice -legacy")
+        try {
+            if (signedInvoice.isEmpty()) {
+                log.error("No Signed Invoice Selected")
+                throw new Exception("No Signed Invoice Selected")
+            }
+            def resp = digSigService.validateArchive(signedInvoice.bytes,true)
+            resp
+        }catch (Exception e) {
+            digSigService.legacyResponse(null,"Unknown", e.message)
+        }
     }
 
     @RequestMapping(path = "/validateArchive", method = RequestMethod.POST)
-    public String validateArchive(@RequestParam("signedInvoice") MultipartFile signedInvoice) {
-        logger.info("validateArchive Signed Invoice ");
+    ResponseEntity validateArchive(@RequestParam("signedInvoice") MultipartFile signedInvoice) {
+        log.info("validateArchive Signed Invoice ")
         if (signedInvoice.isEmpty()) {
-            logger.error("No Signed Invoice Selected")
-            return new ResponseEntity("No Signed Invoice Selected", HttpStatus.BAD_REQUEST);
+            log.error("No Signed Invoice Selected")
+            return new ResponseEntity('{"error": "Required request part \'signedInvoice\' is not present"}', HttpStatus.BAD_REQUEST)
         }
 
-        def resultJson
         try {
-            resultJson = digSigService.validateArchive(signedInvoice.bytes)
-
-        } catch(DigSigException dse){
-            logger.error("Message = "+dse.message +" stackTrace = "+dse.stackTrace)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e) {
-            logger.error("Message = "+e.message+" stackTrace = "+e.stackTrace)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            def resultJson = digSigService.validateArchive(signedInvoice.bytes)
+            ResponseEntity
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(resultJson)
+        } catch (Exception e) {
+            log.error("Message = "+e.message+" stackTrace = "+e.stackTrace)
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(createJson(e))
         }
 
     }
+
+    @ExceptionHandler([ServletRequestBindingException.class, MissingServletRequestPartException.class])
+    public final ResponseEntity<Object> handleHeaderException(Exception ex, WebRequest request)
+    {
+        String error = '{"error": "' +ex.getLocalizedMessage() +'"}'
+        def contentType = MediaType.APPLICATION_JSON
+        if(request?.getRequest().getRequestURI().toString()?.contains("digital_signature")) {
+            error = digSigService.legacyResponse(null, "Unknown", ex.getLocalizedMessage())
+            contentType = MediaType.APPLICATION_XML
+        }
+        log.error(ex.getLocalizedMessage())
+        return ResponseEntity
+                .badRequest()
+                .contentType(contentType)
+                .body(error)
+    }
+
 }

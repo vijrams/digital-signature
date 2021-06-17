@@ -1,28 +1,42 @@
-plugins {
-	id 'org.springframework.boot' version '2.3.2.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'groovy'
-	id "org.sonarqube" version "2.7.1"
-	id 'maven'
+buildscript {
+	ext {
+		springBootVersion = '2.5.0'
+
+	}
+	repositories {
+		mavenLocal()
+		maven{
+			url "https://nexus.wkelms.com/repository/public"
+		}
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
 }
 
-group = 'com.wkelms.ebilling.digsig.api'
-version = '1.0-SNAPSHOT'
-sourceCompatibility = '1.8'
+plugins {
+	id 'org.springframework.boot' version '2.5.0'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'groovy'
+//	id 'maven'
+}
+
+version = '1.5.0'
+sourceCompatibility = '11'
 
 repositories {
 	mavenLocal()
-	mavenCentral()
 	maven{
 		url "https://nexus.wkelms.com/repository/public"
 	}
-
+	mavenCentral()
 }
 
 configurations {
 	jaxws
 }
-
+/*
 bootJar {
 	mainClassName = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
 	exclude ("*.jks")
@@ -69,7 +83,8 @@ task wsimport {
 		println ex
 	}
 }
-
+*/
+/*
 task dist(type: Copy, dependsOn: bootJar) {
 	def profile = project.hasProperty('env') ? env : 'test'
 	def keyStore = "tw_keystore_test.pfx"
@@ -114,17 +129,30 @@ uploadArchives {
 	}
 }
 
-dependencies {
-	jaxws 'com.sun.xml.ws:jaxws-tools:2.1.4'
 
-	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.codehaus.groovy:groovy'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+ */
+
+
+dependencies {
+
+	implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.8'
+	implementation group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.8'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springBootVersion}"
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: "${springBootVersion}"
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: "${springBootVersion}"
+	implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '9.2.1.jre11'
+	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+	implementation group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
+	implementation group: 'com.sun.xml.ws', name: 'jaxws-ri', version: '2.3.4'
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"
+
+
+/*
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	compile group: 'com.sun.xml.ws', name: 'jaxws-tools', version: '2.1.4'
-	compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.10'
 	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 	compile group: 'commons-io', name: 'commons-io', version: '2.7'
@@ -133,8 +161,11 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-}
 
+
+ */
+}
+/*
 sonarqube {
 	properties {
 		property "sonar.sourceEncoding", "UTF-8"
@@ -150,3 +181,6 @@ compileJava {
 test {
 	useJUnitPlatform()
 }
+
+
+ */

@@ -28,13 +28,13 @@ class DigitalSignatureServiceBaseTest {
             case "LEDES98": filename = "sample98bi.txt"
                 multiPartFile = new MockMultipartFile(param, filename, "text/plain", Files.readAllBytes(Paths.get("src/test/resources/" + filename)))
                 break
-            case "XML21": filename = "sample.xml"
+            case "LEDESXML": filename = "sample.xml"
                 multiPartFile = new MockMultipartFile(param, filename, "text/xml", Files.readAllBytes(Paths.get("src/test/resources/" + filename)))
                 break
             case "LEDES98_SIGNED": filename = "sample98BI.signed.txt"
                 multiPartFile = new MockMultipartFile(param, filename, "text/plain", Files.readAllBytes(Paths.get("src/test/resources/" + filename)))
                 break
-            case "LEDESXML_SIGNED": filename = "sample98BI.signed.txt"
+            case "LEDESXML_SIGNED": filename = "sample.signed.xml"
                 multiPartFile = new MockMultipartFile(param, filename, "text/plain", Files.readAllBytes(Paths.get("src/test/resources/" + filename)))
                 break
             case "LEDES_SIGNED_BAD": filename = "sample98BI-bad.signed.txt"

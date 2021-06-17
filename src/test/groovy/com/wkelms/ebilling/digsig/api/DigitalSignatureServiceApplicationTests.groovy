@@ -306,4 +306,51 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.andExpect(xpath("/ValidationResponse/status").string("Unknown"))
 				.andExpect(xpath("/ValidationResponse/desc").string("Required request part 'file' is not present"))
 	}
+
+	@Test
+	void test070SignXMLInvoice() {
+		MockMultipartFile multiPartFile = getMockMultiPartFile("invoice", "LEDESXML")
+		MultiValueMap<String, String> nMap = getDefaultParams("SIGN")
+
+		MvcResult r = mockMvc.perform(MockMvcRequestBuilders.multipart("/sign")
+				.file(multiPartFile)
+				.params(nMap)
+				.characterEncoding("UTF-8"))
+				.andExpect(status().isOk())
+				.andReturn()
+		def content = r.getResponse().getContentAsString()
+		Assert.assertTrue(content.contains("multipart/signed;"))
+		Assert.assertTrue(checkDigSigRecord(nMap.getFirst('referenceId'),nMap.getFirst('senderLawId'),nMap.getFirst('clientLawId'),"OK"))
+	}
+
+	@Test
+	void test071ValidateXMLInvoice() {
+		MockMultipartFile multiPartFile = getMockMultiPartFile("signedInvoice", "LEDESXML_SIGNED")
+		MultiValueMap<String, String> nMap = getDefaultParams("VALI")
+
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/validate")
+				.file(multiPartFile)
+				.params(nMap)
+				.characterEncoding("UTF-8"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("code").value("OK"))
+				.andExpect(jsonPath("desc").value("The signature is valid."))
+	}
+
+	@Test
+	void test072ValidateXMLInvoiceLegacy() {
+		MockMultipartFile multiPartFile = getMockMultiPartFile("file", "LEDESXML_SIGNED")
+		MultiValueMap<String, String> nMap = getDefaultParams("VALIOLD")
+
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/digital_signatures/validate")
+				.file(multiPartFile)
+				.params(nMap)
+				.characterEncoding("UTF-8"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
+				.andExpect(xpath("/ValidationResponse/status").string("Valid"))
+				.andExpect(xpath("/ValidationResponse/desc").string("The signature is valid."))
+	}
+
 }

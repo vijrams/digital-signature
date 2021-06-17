@@ -5,11 +5,10 @@ server:
   sessionTimeout: 30
 
 spring:
-  datasource:
-    url: jdbc:sqlserver://zusscncpsql01\cpdev;DatabaseName=einvoice
-    username: sqlcpuser
-    password: Datac3rt
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  http:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 16MB
 digsig:
   instance: 
   hostnameVerification:

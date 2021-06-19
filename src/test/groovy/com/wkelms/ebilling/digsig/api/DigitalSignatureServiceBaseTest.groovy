@@ -40,6 +40,9 @@ class DigitalSignatureServiceBaseTest {
             case "LEDES_SIGNED_BAD": filename = "sample98BI-bad.signed.txt"
                 multiPartFile = new MockMultipartFile(param, filename, "text/plain", Files.readAllBytes(Paths.get("src/test/resources/" + filename)))
                 break
+            case "LEDES_SIGNED_PROD": filename = "sample-prod.signed.xml"
+                multiPartFile = new MockMultipartFile(param, filename, "text/plain", Files.readAllBytes(Paths.get("src/test/resources/" + filename)))
+                break
         }
         return multiPartFile
     }

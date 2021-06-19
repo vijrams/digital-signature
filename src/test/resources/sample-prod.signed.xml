@@ -1,18 +1,267 @@
 MIME-Version: 1.0
-Date: Wed, 16 Jun 2021 03:42:46 +2
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg="SHA256"; boundary="6536bd21e1db4be686c17373595524fd"
+Date: Sat, 19 Jun 2021 02:09:48 +2
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg="SHA256"; boundary="2d394a60be0442e081e582e761e9a232"
 
 
---6536bd21e1db4be686c17373595524fd
+--2d394a60be0442e081e582e761e9a232
 Content-Type: text/plain charset=utf-8
 
-LEDES1998B[]
-INVOICE_DATE|INVOICE_NUMBER|CLIENT_ID|LAW_FIRM_MATTER_ID|INVOICE_TOTAL|BILLING_START_DATE|BILLING_END_DATE|INVOICE_DESCRIPTION|LINE_ITEM_NUMBER|EXP/FEE/INV_ADJ_TYPE|LINE_ITEM_NUMBER_OF_UNITS|LINE_ITEM_ADJUSTMENT_AMOUNT|LINE_ITEM_TOTAL|LINE_ITEM_DATE|LINE_ITEM_TASK_CODE|LINE_ITEM_EXPENSE_CODE|LINE_ITEM_ACTIVITY_CODE|TIMEKEEPER_ID|LINE_ITEM_DESCRIPTION|LAW_FIRM_ID|LINE_ITEM_UNIT_COST|TIMEKEEPER_NAME|TIMEKEEPER_CLASSIFICATION|CLIENT_MATTER_ID[]
-20100331|1660278|10550|10550-000390|70.0000|20100301|20100331||1|F|0.25|0|70.0000|20091022|L190||0|CPL|Work for Novartis|MAT-1234|280.00|Long, Carissa|PT|MAT-1234[]
-20100331|1660277|10550|10550-000390|70.0000|20100301|20100331||1|F|0.25|0|70.0000|20091022|L190||0|CPL|Work for Novartis|MAT-1234|280.00|Long, Carissa|PT|MAT-1234[]
-20100331|1660276|10550|10550-000390|70.0000|20100301|20100331||1|F|0.25|0|70.0000|20091022|L190||0|CPL|Work for Novartis|MAT-1234|280.00|Long, Carissa|PT|MAT-1234[]
- 
---6536bd21e1db4be686c17373595524fd
+<?xml version="1.0" encoding="utf-8"?>
+<ledesxml xmlns="http://www.ledes.org/ledes20.xsd">
+	<firm>
+		<lf_vendor_id>GB 12 345 6789</lf_vendor_id>
+		<lf_id>FR12-3456789</lf_id>
+		<lf_name>Alpha &amp; Beta, LLC</lf_name>
+		<lf_address>
+			<address_1>Buckingham Palace</address_1>
+			<city>London</city>
+			<zip_postal_code>SW1A 1AA</zip_postal_code>
+			<country>United Kingdom</country>
+			<phone>44 (0)20 7930 4832</phone>
+		</lf_address>
+		<lf_billing_contact>
+			<contact_lname>Doe</contact_lname>
+			<contact_fname>Jane</contact_fname>
+			<contact_id>JDoe</contact_id>
+			<contact_phone>44 (0)20 7930 4832</contact_phone>
+			<contact_email>jane.doe@alphabeta.com</contact_email>
+		</lf_billing_contact>
+		<source_app></source_app>
+		<app_version></app_version>
+		<file_item_nbr>1</file_item_nbr>
+		<tax>
+			<tx_id>1</tx_id>
+			<tax_id_number>GB 12 345 6789</tax_id_number>
+			<tax_type>VAT - Standard Rate</tax_type>
+			<tax_rate_percent>.175</tax_rate_percent>
+			<taxing_jurisdiction>GB</taxing_jurisdiction>
+			<file_item_nbr>22</file_item_nbr>
+		</tax>
+		<tax>
+			<tx_id>2</tx_id>
+			<tax_id_number>GB 12 345 6789</tax_id_number>
+			<tax_type>VAT - Reduce Rate</tax_type>
+			<tax_rate_percent>.05</tax_rate_percent>
+			<taxing_jurisdiction>GB</taxing_jurisdiction>
+			<file_item_nbr>23</file_item_nbr>
+		</tax>
+		<tax>
+			<tx_id>3</tx_id>
+			<tax_id_number>GB 12 345 6789</tax_id_number>
+			<tax_type>VAT - Exempt Rate</tax_type>
+			<tax_rate_percent>.00</tax_rate_percent>
+			<taxing_jurisdiction>GB</taxing_jurisdiction>
+			<file_item_nbr>24</file_item_nbr>
+		</tax>
+		<client>
+			<cl_id>Omega US Entity</cl_id>
+			<cl_lf_id>GB 12 345 6789</cl_lf_id>
+			<cl_name>Omega</cl_name>
+			<cl_address>
+				<address_1>1600 Pennsylvania Ave NW</address_1>
+				<city>Washington</city>
+				<state_province>District of Columbia</state_province>
+				<zip_postal_code>20500</zip_postal_code>
+				<country>United States</country>
+				<phone>202-456-1111</phone>
+				<fax>202-456-2461</fax>
+			</cl_address>
+			<cl_tax_id>12-3456789</cl_tax_id>
+			<file_item_nbr>2</file_item_nbr>
+			<invoice>
+				<inv_id>1234</inv_id>
+				<inv_date>2007-05-16</inv_date>
+				<inv_due_date>2007-06-16</inv_due_date>
+				<inv_currency>GBP</inv_currency>
+				<inv_start_date>2007-04-01</inv_start_date>
+				<inv_end_date>2007-04-30</inv_end_date>
+				<inv_desc>Legal services for Omega for April 2007</inv_desc>
+				<inv_payment_terms>10/30</inv_payment_terms>
+				<inv_total_tax>225.00</inv_total_tax>
+				<inv_total_net_due>3225.00</inv_total_net_due>
+				<file_item_nbr>3</file_item_nbr>
+				<matter>
+					<cl_matter_id>ABC123</cl_matter_id>
+					<lf_matter_id>DFG456</lf_matter_id>
+					<matter_name>Dog V. Cat</matter_name>
+					<lf_managing_contact>
+						<contact_lname>Doe</contact_lname>
+						<contact_fname>Jane</contact_fname>
+						<contact_email>Jane.Doe@alphabeta.com</contact_email>
+					</lf_managing_contact>
+					<matter_billing_type>TM</matter_billing_type>
+					<matter_final_bill>N</matter_final_bill>
+					<matter_total_detail_fees>1500.00</matter_total_detail_fees>
+					<matter_total_detail_exp>1500.00</matter_total_detail_exp>
+					<matter_disc_credit_fees>0.00</matter_disc_credit_fees>
+					<matter_disc_credit_exp>0.00</matter_disc_credit_exp>
+					<matter_disc_cred_total>0.00</matter_disc_cred_total>
+					<matter_perc_shar_fees>1.00</matter_perc_shar_fees>
+					<matter_perc_shar_exp>1.00</matter_perc_shar_exp>
+					<matter_tax_on_fees>112.50</matter_tax_on_fees>
+					<matter_tax_on_exp>112.50</matter_tax_on_exp>
+					<matter_net_fees>1612.50</matter_net_fees>
+					<matter_net_exp>1612.50</matter_net_exp>
+					<matter_total_due>3225.00</matter_total_due>
+					<file_item_nbr>4</file_item_nbr>
+					<tax_summary>
+						<tx_id>1</tx_id>
+						<tax_total_detail_fees>500.00</tax_total_detail_fees>
+						<total_tax_on_fees>87.50</total_tax_on_fees>
+						<tax_total_detail_expense>500.00</tax_total_detail_expense>
+						<total_tax_on_expense>87.50</total_tax_on_expense>
+						<file_item_nbr>5</file_item_nbr>
+					</tax_summary>
+					<tax_summary>
+						<tx_id>2</tx_id>
+						<tax_total_detail_fees>500.00</tax_total_detail_fees>
+						<total_tax_on_fees>25.00</total_tax_on_fees>
+						<tax_total_detail_expense>500.00</tax_total_detail_expense>
+						<total_tax_on_expense>25.00</total_tax_on_expense>
+						<file_item_nbr>6</file_item_nbr>
+					</tax_summary>
+					<tax_summary>
+						<tx_id>3</tx_id>
+						<tax_total_detail_fees>500.00</tax_total_detail_fees>
+						<total_tax_on_fees>00.00</total_tax_on_fees>
+						<tax_total_detail_expense>500.00</tax_total_detail_expense>
+						<total_tax_on_expense>00.00</total_tax_on_expense>
+						<file_item_nbr>7</file_item_nbr>
+					</tax_summary>
+					<tksum>
+						<tk_id>JD</tk_id>
+						<tk_lname>Doe</tk_lname>
+						<tk_fname>Jane</tk_fname>
+						<tk_level>PARTNR</tk_level>
+						<tk_rate>500.00</tk_rate>
+						<file_item_nbr>8</file_item_nbr>
+					</tksum>
+					<tksum>
+						<tk_id>JD1</tk_id>
+						<tk_lname>Doe</tk_lname>
+						<tk_fname>John</tk_fname>
+						<tk_level>PARTNR</tk_level>
+						<tk_rate>500.00</tk_rate>
+						<file_item_nbr>9</file_item_nbr>
+					</tksum>
+					<fee>
+						<charge_date>2007-04-16</charge_date>
+						<tk_id>JD</tk_id>
+						<tk_level>PARTNR</tk_level>
+						<fee_work_location>GB</fee_work_location>
+						<charge_desc>Fees for 16-Apr-07.</charge_desc>
+						<task_code>L230</task_code>
+						<task_activity>A101</task_activity>
+						<charge_type>U</charge_type>
+						<units>1</units>
+						<rate>500.00</rate>
+						<base_amount>500.00</base_amount>
+						<item_disc_cred_amount>0.00</item_disc_cred_amount>
+						<total_amount>500.00</total_amount>
+						<file_item_nbr>10</file_item_nbr>
+						<tax_item_fee>
+							<tx_id>1</tx_id>
+							<file_item_nbr>11</file_item_nbr>
+						</tax_item_fee>
+					</fee>
+					<fee>
+						<charge_date>2007-04-17</charge_date>
+						<tk_id>JD</tk_id>
+						<tk_level>PARTNR</tk_level>
+						<fee_work_location>GB</fee_work_location>
+						<charge_desc>Fees for 17-Apr-07.</charge_desc>
+						<task_code>L230</task_code>
+						<task_activity>A101</task_activity>
+						<charge_type>U</charge_type>
+						<units>1</units>
+						<rate>500.00</rate>
+						<base_amount>500.00</base_amount>
+						<item_disc_cred_amount>0.00</item_disc_cred_amount>
+						<total_amount>500.00</total_amount>
+						<file_item_nbr>12</file_item_nbr>
+						<tax_item_fee>
+							<tx_id>2</tx_id>
+							<file_item_nbr>13</file_item_nbr>
+						</tax_item_fee>
+					</fee>
+					<fee>
+						<charge_date>2007-04-17</charge_date>
+						<tk_id>JD1</tk_id>
+						<tk_level>PARTNR</tk_level>
+						<fee_work_location>GB</fee_work_location>
+						<charge_desc>Fees for 17-Apr-07.</charge_desc>
+						<task_code>L230</task_code>
+						<task_activity>A101</task_activity>
+						<charge_type>U</charge_type>
+						<units>1</units>
+						<rate>500.00</rate>
+						<base_amount>500.00</base_amount>
+						<item_disc_cred_amount>0.00</item_disc_cred_amount>
+						<total_amount>500.00</total_amount>
+						<file_item_nbr>14</file_item_nbr>
+						<tax_item_fee>
+							<tx_id>3</tx_id>
+							<file_item_nbr>15</file_item_nbr>
+						</tax_item_fee>
+					</fee>
+					<expense>
+						<charge_date>2007-04-16</charge_date>
+						<work_location>GB</work_location>
+						<charge_desc>Expenses for April 2007.</charge_desc>
+						<expense_code>E110</expense_code>
+						<charge_type>F</charge_type>
+						<units>0</units>
+						<rate>0</rate>
+						<base_amount>500.00</base_amount>
+						<item_disc_cred_amount>0.00</item_disc_cred_amount>
+						<total_amount>500.00</total_amount>
+						<file_item_nbr>16</file_item_nbr>
+						<tax_item_expense>
+							<tx_id>1</tx_id>
+							<file_item_nbr>17</file_item_nbr>
+						</tax_item_expense>
+					</expense>
+					<expense>
+						<charge_date>2007-04-16</charge_date>
+						<work_location>GB</work_location>
+						<charge_desc>Expenses for April 2007.</charge_desc>
+						<expense_code>E110</expense_code>
+						<charge_type>U</charge_type>
+						<units>1</units>
+						<rate>500.00</rate>
+						<base_amount>500.00</base_amount>
+						<item_disc_cred_amount>0.00</item_disc_cred_amount>
+						<total_amount>500.00</total_amount>
+						<file_item_nbr>18</file_item_nbr>
+						<tax_item_expense>
+							<tx_id>2</tx_id>
+							<file_item_nbr>19</file_item_nbr>
+						</tax_item_expense>
+					</expense>
+					<expense>
+						<charge_date>2007-04-16</charge_date>
+						<work_location>GB</work_location>
+						<charge_desc>Expenses for April 2007.</charge_desc>
+						<expense_code>E110</expense_code>
+						<charge_type>U</charge_type>
+						<units>1</units>
+						<rate>500.00</rate>
+						<base_amount>500.00</base_amount>
+						<item_disc_cred_amount>0.00</item_disc_cred_amount>
+						<total_amount>500.00</total_amount>
+						<file_item_nbr>20</file_item_nbr>
+						<tax_item_expense>
+							<tx_id>3</tx_id>
+							<file_item_nbr>21</file_item_nbr>
+						</tax_item_expense>
+					</expense>
+				</matter>
+			</invoice>
+		</client>
+	</firm>
+</ledesxml>
+
+--2d394a60be0442e081e582e761e9a232
 Content-Transfer-Encoding: base64
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
@@ -116,8 +365,8 @@ kQzMqtlkJe4+J6H2lLy1DtZIez2Z4f0aa4eBYzGCSI0wgkiJAgEBMIGbMIGIMQswCQYDVQQGEwJI
 VTERMA8GA1UEBwwIQnVkYXBlc3QxFjAUBgNVBAoMDU1pY3Jvc2VjIEx0ZC4xHDAaBgNVBGEME1ZB
 VEhVLTIzNTg0NDk3LTItNDExMDAuBgNVBAMMJ1F1YWxpZmllZCBlLVN6aWdubyBPcmdhbml6YXRp
 b24gQ0EgMjAxNgIOAahH9N6zfDUcYulo7QowDQYJYIZIAWUDBAIBBQCgggI1MBgGCSqGSIb3DQEJ
-AzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDYxNjAxNDI0NVowLwYJKoZIhvcNAQkE
-MSIEIMwAsv6pi1En+0VOGeScjdlx8L5A7a4T5aU5VvWxdw24MIHfBgsqhkiG9w0BCRACLzGBzzCB
+AzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDYxOTAwMDk0OFowLwYJKoZIhvcNAQkE
+MSIEIBdE/xLF7y/PerPw9Ydqz8JV4ytzNNeG0m64Fdcsw1zlMIHfBgsqhkiG9w0BCRACLzGBzzCB
 zDCByTCBxgQgzuHR6Jc0aDKHrf6laZ/4XmUkkZBSg403wagNl7ok3aswgaEwgY6kgYswgYgxCzAJ
 BgNVBAYTAkhVMREwDwYDVQQHDAhCdWRhcGVzdDEWMBQGA1UECgwNTWljcm9zZWMgTHRkLjEcMBoG
 A1UEYQwTVkFUSFUtMjM1ODQ0OTctMi00MTEwMC4GA1UEAwwnUXVhbGlmaWVkIGUtU3ppZ25vIE9y
@@ -126,11 +375,11 @@ CyqFcEwBgUeFOwEJMB8wBwYFKw4DAhoEFGWLNYskdQHA+VYqcFyMNhUfqbdkMIGjMIGgBgsqhkiG
 9w0BCRAFARaBkGh0dHBzOi8vc292b3MuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDE5LzEwL1RX
 T0QtU2lnbmF0dXJlLVBvbGljeS5wZGY/ZnJvbT1VUyZ0bz1VUyZhdXRoQ2VydFRodW1icHJpbnQ9
 Rjc5Njg3N0I3ODYyQTM3MDMxMkQ0MkUxRjBENTJGNjVEMkJBMkU3RDANBgkqhkiG9w0BAQEFAASC
-AQAX2EizmF026N/kZVi/YfF/wbRJWya2Ekhiz+PXQieA/zZhCCu9x1M19EcNNg9WssdGdY+WaqY+
-Wb9/Qd1NoEt2AZcwkwPYRY6yXYOdJDchIdUr5syd/ZYarNAn7TOvkshUlTvGKHKHCzoUZZdbARu7
-AV0PLTG4AKW7T5an/m+qbTeZmr5k/e9E6ChEn+leSDs3NXXQer4dSKlgZyH9PrN2UcizqWHhJXIH
-3fejBX+RNvFqcHLeGU5+R1UjzXHy4aDkGtzTxkWdWErsc0E5QooAmHW7mT08vTgQHXs62AOFyMSZ
-1Ed1Hag7t1GAEV7Anw/hDVDQDC+3g/OGhP9OGc0eoYJEiTCBkAYHKoVwTIZ4ATGBhDCBgQYLKoVw
+AQByD5Bq2sSNmN4af1TWeOk71DJLWR2xVnYYUJOp53kf+ppLDrR8LjTgABMeUobiYU8yfy8DAztV
+bOfrt77yHLdM2XcWtOSNfyIwz7ubj5gQP0UHBSUZTg+PSvE13kEGy2KKBzxRjuTY6ZkvhTUUU/Ob
+sEFmZZPyGM8Ma6R7tTFEnexl8mgyxmIrZYA4OQBRl4apSu/9YPOZdKKwfPRbexOEV4ZIy/UgfxcS
+67pCD9abtUkw6xGc0bM4tENN59dWv4IPDV1bW46FATEl2/fxWTxg+tWJ2MzTwMjM6PnEh+lz3yTP
+Bl4Q4Hx3Imj9ZQBic/sGcbkRJN8FgffNXu1c9zu8oYJEiTCBkAYHKoVwTIZ4ATGBhDCBgQYLKoVw
 TAGBR4U7AQowcjBwBgcqhXBMhngCFmVodHRwczovL3Nvdm9zLmNvbS9wb2xpY2llcy8/ZnJvbT1V
 UyZ0bz1VUyZhdXRoQ2VydFRodW1icHJpbnQ9Rjc5Njg3N0I3ODYyQTM3MDMxMkQ0MkUxRjBENTJG
 NjVEMkJBMkU3RDCCAX0GCyqGSIb3DQEJEAIVMYIBbDCCAWgwgbMEFIgJATqz4ZYgwd7Nw2wnPEnI
@@ -140,18 +389,18 @@ MB0GCSqGSIb3DQEJARYQaW5mb0BlLXN6aWduby5odQINAJAnSYTL8NLZr6/zCjCBrwQUid90/lz0
 D0qA+eM3fVTakeEBMY4wgZYwgYikgYUwgYIxCzAJBgNVBAYTAkhVMREwDwYDVQQHDAhCdWRhcGVz
 dDEWMBQGA1UECgwNTWljcm9zZWMgTHRkLjEnMCUGA1UEAwweTWljcm9zZWMgZS1Temlnbm8gUm9v
 dCBDQSAyMDA5MR8wHQYJKoZIhvcNAQkBFhBpbmZvQGUtc3ppZ25vLmh1AgkAwn5DBE5HPxkwggGb
-BgsqhkiG9w0BCRACFjGCAYowggGGMIHDoIHAMIG9MIG6MIG3BBSxW/+Puk4sJy9hLy3q0EXDx1vJ
-7DCBnjCBiDEwMC4GA1UEAxMnUXVhbGlmaWVkIGUtU3ppZ25vIE9yZ2FuaXphdGlvbiBDQSAyMDE2
+BgsqhkiG9w0BCRACFjGCAYowggGGMIHDoIHAMIG9MIG6MIG3BBTozTx27dFlIVtspYgPK8SyE59X
+BzCBnjCBiDEwMC4GA1UEAxMnUXVhbGlmaWVkIGUtU3ppZ25vIE9yZ2FuaXphdGlvbiBDQSAyMDE2
 MRwwGgYDVQRhExNWQVRIVS0yMzU4NDQ5Ny0yLTQxMRYwFAYDVQQKEw1NaWNyb3NlYyBMdGQuMREw
-DwYDVQQHEwhCdWRhcGVzdDELMAkGA1UEBhMCSFUXDTIxMDYxNTE5MTAyNFoCAlSwMIG9oIG6MIG3
-MIG0MIGxBBRm6yc5aKyIvkdicWyMfFZL9tFIhDCBmDCBgjEfMB0GCSqGSIb3DQEJARYQaW5mb0Bl
+DwYDVQQHEwhCdWRhcGVzdDELMAkGA1UEBhMCSFUXDTIxMDYxODE5MTAyMloCAlS2MIG9oIG6MIG3
+MIG0MIGxBBQOR+a/0LYXBrXvhX+VJT7RmsUBgzCBmDCBgjEfMB0GCSqGSIb3DQEJARYQaW5mb0Bl
 LXN6aWduby5odTEnMCUGA1UEAxMeTWljcm9zZWMgZS1Temlnbm8gUm9vdCBDQSAyMDA5MRYwFAYD
 VQQKEw1NaWNyb3NlYyBMdGQuMREwDwYDVQQHEwhCdWRhcGVzdDELMAkGA1UEBhMCSFUXDTIxMDYx
-NTE3MzAwMFoCAhurMIIJygYLKoZIhvcNAQkQAhgxggm5MIIJtaCCCa0wggmpMIIFVzCCAz8CAQEw
+ODE3MzAwMFoCAhuxMIIJygYLKoZIhvcNAQkQAhgxggm5MIIJtaCCCa0wggmpMIIFVzCCAz8CAQEw
 DQYJKoZIhvcNAQELBQAwgYgxCzAJBgNVBAYTAkhVMREwDwYDVQQHDAhCdWRhcGVzdDEWMBQGA1UE
 CgwNTWljcm9zZWMgTHRkLjEcMBoGA1UEYQwTVkFUSFUtMjM1ODQ0OTctMi00MTEwMC4GA1UEAwwn
-UXVhbGlmaWVkIGUtU3ppZ25vIE9yZ2FuaXphdGlvbiBDQSAyMDE2Fw0yMTA2MTUxOTEwMjRaFw0y
-MTA2MTYyMDEwMjRaMIICNDAtAg4AvsX8kKEHE/EtvwskChcNMTYwOTI5MTE0NTQzWjAMMAoGA1Ud
+UXVhbGlmaWVkIGUtU3ppZ25vIE9yZ2FuaXphdGlvbiBDQSAyMDE2Fw0yMTA2MTgxOTEwMjJaFw0y
+MTA2MTkyMDEwMjJaMIICNDAtAg4AvsX8kKEHE/EtvwskChcNMTYwOTI5MTE0NTQzWjAMMAoGA1Ud
 FQQDCgEBMC0CDgDL14FY1q98S3PEKckKFw0xNzA1MzExNDE4MzVaMAwwCgYDVR0VBAMKAQQwLQIO
 AOjgS1oLVCEJSHzt/woXDTE3MTAwMjA4NDcyMVowDDAKBgNVHRUEAwoBBTAtAg4BFhJ/H0syxwGB
 vSkKChcNMTgwOTE0MTE1NTQ2WjAMMAoGA1UdFQQDCgEFMC0CDgEvdci//VitprFOV2sKFw0xOTEy
@@ -162,20 +411,20 @@ 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
-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
+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
-MDA5MR8wHQYJKoZIhvcNAQkBFhBpbmZvQGUtc3ppZ25vLmh1Fw0yMTA2MTUxNzMwMDBaFw0yMTA2
-MTYxODMwMDBaMIICLTAgAgEBFw0xOTExMjkxMDQ5MjJaMAwwCgYDVR0VBAMKAQQwIAIBAhcNMTkx
+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
@@ -186,12 +435,12 @@ JqWPChcNMTkxMTI5MTEwNzE5WjAMMAoGA1UdFQQDCgEEMCwCDQCA1T3TPnHiBNJxDQoXDTE5MTEy
 OTExMDQyN1owDDAKBgNVHRUEAwoBBDAsAg0AvgiOBVBHt/RnuEYKFw0xODEyMTQxMTQ5MDZaMAww
 CgYDVR0VBAMKAQQwLAINAMh+oOlFOzGYVPJOChcNMjAxMDA5MTAwOTU1WjAMMAoGA1UdFQQDCgEF
 oEowSDAfBgNVHSMEGDAWgBTLD8bfQkPMPcu1SCOhGnqmKrs0aDAYBgNVHTwEERgPMjAwOTA2MTYx
-MTMwMThaMAsGA1UdFAQEAgIbqzANBgkqhkiG9w0BAQsFAAOCAQEAiVt5687N1TYadFRqnyhkCt/z
-rwZjDp68LXq9Q4wavheFyMKb4NrafpIho6C0siTv0QPnYjjr42oFubNMueIJmvsjQGm5et5PTXoU
-DreW/8WxAQ8zZDaxOT0DLg6UkTFDD+uUbF3Hw0tModhGwzRqraymM5z/TBPRHBVQgtXP5PLPBqGl
-5QveWhIIp1sjenQJ0/gCZXC1ILeaCiHXIpZIqO3bTPhn5kOZFL8kFjUpJJbOWsFpexryNYYyhqQu
-va6mck7S9lwMANX4k+ZrTjTzeglmh+oks1qQvZ3g+y2jGT82l+VWVL43eZwbaK87aIRxTxpYy4PS
-zQe4zEHw3SOV6qECMAAwggt6BgsqhkiG9w0BCRACFzGCC2kwggtlMIIHUzCCBjugAwIBAgINAJAn
+MTMwMThaMAsGA1UdFAQEAgIbsTANBgkqhkiG9w0BAQsFAAOCAQEAcgSYA+q82TOc36wDwrrgW+zJ
+XD3LK6VbYrP6sG1xx1bBakE5DUTBVMPZbbwRm5pxaZxhFn/6is9eld0DUuvhJfOYGXNlzS3XA0Lp
+2FrNYwFme/FbxheEJ4cuqoO8j8Mx73O+Lfaezo6G+NlEJIWhZTDWa36/DphXta3Ga7GY5l7hpfAe
+3I8tJ8YlpDQdy6dnIKQRTZL7iym6BEfuVvftllgXZKrw3Ek9nhrW2Li3RuXk9MRnDjs2jcpnTLAy
+FD35MmXpqdWJ7iuXcDf2Tp12fqwOf46/wkBy0Q6PZSnTTbwZu8oU5zqByDXEauxJV/pKaFV22fXU
+bEX+Ju+oMsN0NaECMAAwggt6BgsqhkiG9w0BCRACFzGCC2kwggtlMIIHUzCCBjugAwIBAgINAJAn
 SYTL8NLZr6/zCjANBgkqhkiG9w0BAQsFADCBgjELMAkGA1UEBhMCSFUxETAPBgNVBAcMCEJ1ZGFw
 ZXN0MRYwFAYDVQQKDA1NaWNyb3NlYyBMdGQuMScwJQYDVQQDDB5NaWNyb3NlYyBlLVN6aWdubyBS
 b290IENBIDIwMDkxHzAdBgkqhkiG9w0BCQEWEGluZm9AZS1zemlnbm8uaHUwHhcNMTYwODI5MDIw
@@ -244,9 +493,9 @@ GPYSuqIUFOMxNchA/7fgBXZXwRxZ8vi/5O0lYlyE8H5+H7O++bchEcwDAVZwpxCSHhs0gR6tnBrD
 BDztAmHWHgbzXzqH8ivxRYflPazRx1eEvWuu3Nj5thticAs9NslC8jLXemHm0ts9z8ipyZvc21hE
 1284r39406OtGnW6HME2fI8ebRzDdUauNQWm9lw9Ie5W8MmCIi16VKtww30iZYJwljCCFcEGCyqG
 SIb3DQEJEAIOMYIVsDCCFawGCSqGSIb3DQEHAqCCFZ0wghWZAgEDMQ8wDQYJYIZIAWUDBAIBBQAw
-eQYLKoZIhvcNAQkQAQSgagRoMGYCAQEGCyqFcEwBgUeFOwEIMDEwDQYJYIZIAWUDBAIBBQAEIPnU
-x0rj3Rrawz8NEd3yPQ6qu79qqthRFvnuzrIa95OtAhBGYAMLSV7SRrQRcVTYTP9aGA8yMDIxMDYx
-NjAxNDI0NVqgggZnMIIGYzCCBEugAwIBAgIQb9t3fBF7REOZvpm8nLIjyjANBgkqhkiG9w0BAQsF
+eQYLKoZIhvcNAQkQAQSgagRoMGYCAQEGCyqFcEwBgUeFOwEIMDEwDQYJYIZIAWUDBAIBBQAEINIz
+/x5XnGPxxBpKcbY9/MY8ZNd0wZHM3oNgOTRtzoHpAhBbrs4bbdBoRJxE3rB8UuxWGA8yMDIxMDYx
+OTAwMDk0OFqgggZnMIIGYzCCBEugAwIBAgIQb9t3fBF7REOZvpm8nLIjyjANBgkqhkiG9w0BAQsF
 ADA8MQswCQYDVQQGEwJTRTEUMBIGA1UEChMLVHJ1c3RXZWF2ZXIxFzAVBgNVBAMTDlRydXN0V2Vh
 dmVyIENBMB4XDTIwMTIxNjEzNTk0MFoXDTMyMTIxNjE0MTk0MFowgY4xCzAJBgNVBAYTAlNFMSkw
 JwYDVQQKEyBUcnVzdFdlYXZlciBBQiAtIFNpZ25pbmcgU2VydmljZTEpMCcGA1UECxMgVHJ1c3RX
@@ -277,23 +526,23 @@ Z1q3z9cHonDJ/ozuHNw1LvLLwbrrnRycgsB1gVrqHPoOgFrRJKqmdrg1R5BYTriw/rxZU7G/WBil
 kIWMzkYO0fPuQ6dnb5Gu7yHsoS2GnQp+XeRSNOO8llLOu+CNHIdCiUD6uB55NFYTKhTwYrw/XDGC
 Dpswgg6XAgEBMFAwPDELMAkGA1UEBhMCU0UxFDASBgNVBAoTC1RydXN0V2VhdmVyMRcwFQYDVQQD
 Ew5UcnVzdFdlYXZlciBDQQIQb9t3fBF7REOZvpm8nLIjyjANBglghkgBZQMEAgEFAKCB+zAaBgkq
-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
+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
-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
+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
-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
+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
-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
+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
@@ -306,16 +555,16 @@ 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
-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
+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
@@ -342,8 +591,8 @@ DzbZdw5lf0G/qJThpI7Xj1a90Q9RxTUG6vgG3vaRBT/HwBWynnYjKfHFCbZlSJpGq464Hkl+0Dkt
 SJK8I2/9RBdHkCsUzUyoGczeapGg74vF6PMHhSkJQC/VnL3064fY8/KZnPXb2akSN6B3EwFMF61Y
 +R6oUPR56CDhsnC3UlT3IZRfY5V4lfeyzuqsWiu6d7KKZpDAMIIVwQYLKoZIhvcNAQkQAhsxghWw
 MIIVrAYJKoZIhvcNAQcCoIIVnTCCFZkCAQMxDzANBglghkgBZQMEAgEFADB5BgsqhkiG9w0BCRAB
-BKBqBGgwZgIBAQYLKoVwTAGBR4U7AQgwMTANBglghkgBZQMEAgEFAAQgJf12ze6xiw+sUZYH0kWR
-UoAsAeCOXI0wA/AaXQnitCUCEEdLAIW2cj9Avn8qBNwValgYDzIwMjEwNjE2MDE0MjQ1WqCCBmcw
+BKBqBGgwZgIBAQYLKoVwTAGBR4U7AQgwMTANBglghkgBZQMEAgEFAAQgGvlVEtpThIiTg5AFjLPS
+5PLD+gboKDVnVlrVCYBN4xgCEEd1AGcYam1HnBUp2OHICsYYDzIwMjEwNjE5MDAwOTQ4WqCCBmcw
 ggZjMIIES6ADAgECAhBv23d8EXtEQ5m+mbycsiPKMA0GCSqGSIb3DQEBCwUAMDwxCzAJBgNVBAYT
 AlNFMRQwEgYDVQQKEwtUcnVzdFdlYXZlcjEXMBUGA1UEAxMOVHJ1c3RXZWF2ZXIgQ0EwHhcNMjAx
 MjE2MTM1OTQwWhcNMzIxMjE2MTQxOTQwWjCBjjELMAkGA1UEBhMCU0UxKTAnBgNVBAoTIFRydXN0
@@ -375,23 +624,23 @@ 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
-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
+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
-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
+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
-iwL+vHFAkFgJgS4ZdP4wgYQGCyqGSIb3DQEJEAIWMXUwczBxoG8wbTBrMGkEFKNtM+lCaqI1eVCT
-FNbrX4jtPoKoMFEwPDEXMBUGA1UEAxMOVHJ1c3RXZWF2ZXIgQ0ExFDASBgNVBAoTC1RydXN0V2Vh
-dmVyMQswCQYDVQQGEwJTRRcNMjEwNjE1MTk1MDEzWgICQPIwggV6BgsqhkiG9w0BCRACGDGCBWkw
+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
-A1UEChMLVHJ1c3RXZWF2ZXIxFzAVBgNVBAMTDlRydXN0V2VhdmVyIENBFw0yMTA2MTUxOTUwMTNa
-Fw0yMTA2MTYyMDAwMTNaMIICmTAhAhBrBC5DRptMT5Btvx+qTxsXFw0xODAxMDIxNjA5MzBaMCEC
+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
@@ -403,17 +652,17 @@ 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
-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
+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
@@ -439,4 +688,4 @@ lQYll+psZkBY5kH5X4kDCvwvag8kR4UShBunnmzECowdzqo1NfPAIRn6SAYPNtl3DmV/Qb+olOGk
 jtePVr3RD1HFNQbq+Abe9pEFP8fAFbKediMp8cUJtmVImkarjrgeSX7QOS1Ikrwjb/1EF0eQKxTN
 TKgZzN5qkaDvi8Xo8weFKQlAL9WcvfTrh9jz8pmc9dvZqRI3oHcTAUwXrVj5HqhQ9HnoIOGycLdS
 VPchlF9jlXiV97LO6qxaK7p3sopmkMA=
---6536bd21e1db4be686c17373595524fd--
+--2d394a60be0442e081e582e761e9a232--

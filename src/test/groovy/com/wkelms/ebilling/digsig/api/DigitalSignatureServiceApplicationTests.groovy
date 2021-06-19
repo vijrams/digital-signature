@@ -68,8 +68,11 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
 				.andReturn()
-		def content = r.getResponse().getContentAsString()
-		Assert.assertTrue(content.contains("multipart/signed;"))
+		def content = r.getResponse().getContentAsByteArray()
+		new File('src/test/resources/sample98BI.signed.txt').withOutputStream {
+			it.write content
+		}
+		Assert.assertTrue(new String(content).contains("multipart/signed;"))
 		Assert.assertTrue(checkDigSigRecord(nMap.getFirst('referenceId'),nMap.getFirst('senderLawId'),nMap.getFirst('clientLawId'),"OK"))
 	}
 
@@ -181,8 +184,8 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("code").value("SignerInvalid"))
-				.andExpect(jsonPath("desc").value("The signing certificate is issued under a policy which is unknown"))
+				.andExpect(jsonPath("code").value("SignatureInvalid"))
+				.andExpect(jsonPath("desc").value("The document signature is invalid"))
 	}
 
 	@Test
@@ -279,8 +282,9 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
-				.andExpect(xpath("/ValidationResponse/status").string("SignerInvalid"))
-				.andExpect(xpath("/ValidationResponse/desc").string("The signing certificate is issued under a policy which is unknown"))
+				.andExpect(xpath("/ValidationResponse/status").string("SignatureInvalid"))
+				.andExpect(xpath("/ValidationResponse/desc").string("The document signature is invalid"))
+
 	}
 
 	@Test
@@ -318,8 +322,11 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
 				.andReturn()
-		def content = r.getResponse().getContentAsString()
-		Assert.assertTrue(content.contains("multipart/signed;"))
+		def content = r.getResponse().getContentAsByteArray()
+		new File('src/test/resources/sample.signed.xml').withOutputStream {
+			it.write content
+		}
+		Assert.assertTrue(new String(content).contains("multipart/signed;"))
 		Assert.assertTrue(checkDigSigRecord(nMap.getFirst('referenceId'),nMap.getFirst('senderLawId'),nMap.getFirst('clientLawId'),"OK"))
 	}
 
@@ -351,6 +358,21 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
 				.andExpect(xpath("/ValidationResponse/status").string("Valid"))
 				.andExpect(xpath("/ValidationResponse/desc").string("The signature is valid."))
+	}
+
+	@Test
+	void test080ValidateProdSignedInvoiceInStag() {
+		MockMultipartFile multiPartFile = getMockMultiPartFile("signedInvoice", "LEDES_SIGNED_PROD")
+		MultiValueMap<String, String> nMap = getDefaultParams("VALI")
+
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/validate")
+				.file(multiPartFile)
+				.params(nMap)
+				.characterEncoding("UTF-8"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("code").value("SignerInvalid"))
+				.andExpect(jsonPath("desc").value("The signing certificate is issued under a policy which is unknown"))
 	}
 
 }

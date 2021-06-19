@@ -3,10 +3,6 @@ trigger:
     include:
     - '*'
 
-variables:
-- name: buildStatus
-  value: pass'
-
 stages:
 - stage: build
   displayName: Build Stage
@@ -18,8 +14,8 @@ stages:
       - Agent.Name -equals cp-build
     steps:
     - script: 'cp /root/.embedmongo/gradlew .'
-    - script: 'chmod -R 777 /azp/_work/1/s'
     - task: Gradle@2
+      continueOnError: true
       inputs:
         gradleWrapperFile: 'gradlew'
         tasks: 'clean build'

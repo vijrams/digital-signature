@@ -3,6 +3,10 @@ trigger:
     include:
     - '*'
 
+variables:
+- name: buildStatus
+  value: pass'
+
 stages:
 - stage: build
   displayName: Build Stage
@@ -19,15 +23,11 @@ stages:
       inputs:
         gradleWrapperFile: 'gradlew'
         tasks: 'clean build'
-        publishJUnitResults: true
-        testResultsFiles: '**/test/*'
-        javaHomeOption: 'JDKVersion'
-        sonarQubeRunAnalysis: false
-        spotBugsAnalysis: false
- #   - task: PublishBuildArtifacts@1
- #     inputs:
- #       PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'
- #       ArtifactName: 'results'
- #       publishLocation: 'Container'
- #       StoreAsTar: true
+        publishJUnitResults: false
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'
+        ArtifactName: 'results'
+        publishLocation: 'Container'
+        StoreAsTar: true
         

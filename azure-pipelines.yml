@@ -20,9 +20,9 @@ stages:
     - task: Gradle@2
       inputs:
         gradleWrapperFile: 'gradlew'
-        tasks: 'build'
+        tasks: 'clean build'
         publishJUnitResults: true
-        testResultsFiles: '**/TEST/*.*'
+        testResultsFiles: '**/test/*'
         javaHomeOption: 'JDKVersion'
         sonarQubeRunAnalysis: false
         spotBugsAnalysis: false

@@ -14,13 +14,13 @@ stages:
       - Agent.Name -equals cp-build
     steps:
     - task: CmdLine@2
-      continueOnError: true
+#      continueOnError: true
       inputs:
-        script: gradle clean build
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'
-        ArtifactName: 'results'
-        publishLocation: 'Container'
-        StoreAsTar: true
+        script: cp cd /root/.embedmongo/gradlew .
+ #   - task: PublishBuildArtifacts@1
+ #     inputs:
+ #       PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'
+ #       ArtifactName: 'results'
+ #       publishLocation: 'Container'
+ #       StoreAsTar: true
         

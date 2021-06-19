@@ -17,6 +17,15 @@ stages:
 #      continueOnError: true
       inputs:
         script: cp /root/.embedmongo/gradlew .
+    - task: Gradle@2
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'build'
+        publishJUnitResults: true
+        testResultsFiles: '**/TEST/*.*'
+        javaHomeOption: 'JDKVersion'
+        sonarQubeRunAnalysis: false
+        spotBugsAnalysis: false
  #   - task: PublishBuildArtifacts@1
  #     inputs:
  #       PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'

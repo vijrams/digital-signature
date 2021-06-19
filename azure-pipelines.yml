@@ -17,7 +17,7 @@ stages:
 #      continueOnError: true
       inputs:
         script: cp /root/.embedmongo/gradlew .
-    - script: 'sudo chmod -R 777 /azp/_work/1/s/build'
+    - script: 'chmod -R 777 /azp/_work/1/s/build'
     - task: Gradle@2
       inputs:
         gradleWrapperFile: 'gradlew'

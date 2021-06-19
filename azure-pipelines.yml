@@ -16,7 +16,7 @@ stages:
     - task: CmdLine@2
 #      continueOnError: true
       inputs:
-        script: cp cd /root/.embedmongo/gradlew .
+        script: cp /root/.embedmongo/gradlew .
  #   - task: PublishBuildArtifacts@1
  #     inputs:
  #       PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'

@@ -69,8 +69,8 @@ class DigSigController {
 
         }
         catch(SOAPFaultException se){
-            def json = createJson(se)
             log.error("Message = "+se.message +" stackTrace = "+se.stackTrace)
+            def json = createJson(se)
             return  ResponseEntity.unprocessableEntity()
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(json)

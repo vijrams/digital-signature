@@ -9,6 +9,7 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.apache.tomcat.util.json.JSONParser
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import groovy.json.JsonBuilder
 import java.io.ByteArrayOutputStream
@@ -32,6 +33,9 @@ class DigSigService {
 
     @Autowired
     private SharedocDao sdDao
+
+    @Value('${digsig.wdslURL}')
+    private  String wsdlUrl
 
     def iso3CountryCodeToIso2CountryCode(String iso3CountryCode) {
         def retVal = localeMap?.get(iso3CountryCode)
@@ -61,8 +65,13 @@ class DigSigService {
                 "  <signatures></signatures></ValidationResponse>"
     }
 
+    def getSwichService(){
+        URL u = new URL(wsdlUrl)
+        return new SwitchService(u)
+    }
+
     def getServiceInfo(){
-        def switchService = new SwitchService()
+        def switchService = getSwichService()
         def switchServiceSoap = switchService.getSwitchServiceSoap()
         def serviceInfo = switchServiceSoap.getServiceInfo()
         def jsonResponse = new JsonBuilder(serviceInfo).toPrettyString()
@@ -73,7 +82,7 @@ class DigSigService {
 
     def sign(invoiceBytes,senderCountry,clientCountry,referenceId,senderLawId,clientLawId,invoiceCount){
         sdDao.insertDigSigRecord(senderCountry,clientCountry,referenceId,senderLawId,clientLawId,invoiceCount)
-        def switchService = new SwitchService()
+        def switchService = getSwichService()
         def switchServiceSoap = switchService.getSwitchServiceSoap()
         def signRequest =  new SignRequest()
 
@@ -99,7 +108,7 @@ class DigSigService {
 
     def validate(signedInvoice, senderCountry, clientCountry, isXML=false){
         log.info("Validating Signed Invoice")
-        def switchService = new SwitchService()
+        def switchService = getSwichService()
         def switchServiceSoap = switchService.getSwitchServiceSoap()
         def validateRequest = new ValidateRequest()
         validateRequest.inputType           = 'SMIME'
@@ -118,7 +127,7 @@ class DigSigService {
 
     def validateArchive(signedInvoice, isXML=false){
         log.info("validateArchive for Signed Invoice")
-        def switchService = new SwitchService()
+        def switchService = getSwichService()
         def switchServiceSoap = switchService.getSwitchServiceSoap()
         def validateArchiveRequest = new ValidateArchiveRequest()
         validateArchiveRequest.inputType        = 'SMIME'

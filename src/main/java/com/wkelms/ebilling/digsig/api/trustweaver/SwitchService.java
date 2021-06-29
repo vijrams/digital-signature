@@ -10,8 +10,6 @@ import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 
-import org.springframework.core.io.support.PropertiesLoaderUtils;
-import java.util.Properties;
 
 /**
  * Signature switch
@@ -21,7 +19,7 @@ import java.util.Properties;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "SwitchService", targetNamespace = "http://www.trustweaver.com/tsswitch", wsdlLocation = "${url}")
+@WebServiceClient(name = "SwitchService", targetNamespace = "http://www.trustweaver.com/tsswitch")
 public class SwitchService
     extends Service
 {
@@ -34,11 +32,10 @@ public class SwitchService
         URL url = null;
         WebServiceException e = null;
         try {
-            Properties properties = PropertiesLoaderUtils.loadAllProperties("application.yml");
-            url = new URL(properties.getProperty("wdslURL").toString());
+            url = new URL("https://twod-test.trustweaver.com/ts/svs.asmx?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
-        } catch(Exception ex1) {}
+        }
         SWITCHSERVICE_WSDL_LOCATION = url;
         SWITCHSERVICE_EXCEPTION = e;
     }

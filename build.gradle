@@ -69,7 +69,7 @@ task wsimport {
 	}
 }
 
-/*
+
 bootJar {
 	mainClassName = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
 	exclude ("*.jks")
@@ -77,36 +77,27 @@ bootJar {
 	exclude ("*.xml")
 	exclude ("*.exe")
 }
-*/
 
-/*
+
 task dist(type: Copy, dependsOn: bootJar) {
-	def profile = project.hasProperty('env') ? env : 'test'
-	def keyStore = "tw_keystore_test.pfx"
-	def trustStore = "tw_truststore_test.jks"
-	if (profile == 'prod'){
-		keyStore = "tw_keystore_prod.pfx"
-		trustStore = "tw_truststore_prod.jks"
-	}
-	println "Environment -----------> $profile"
+	def keyStore = "tw_keystore_stag_2021.pfx"
+	def trustStore = "tw_truststore_stg.jks"
 	def distDir = file ('build/dist/')
 	distDir.mkdir()
 	from 'build/libs'
 	from 'src/main/resources'
 	into 'build/dist'
-	include "nssm.exe"
-	include "start_service.bat"
 	include "application.yml.rename"
-	include "keystore.jks"
 	include "$keyStore"
 	include "$trustStore"
+	include "keystore.jks"
 	include "logback.xml"
 	include "${project.name}-${project.version}.jar"
 	rename("${project.name}-${project.version}.jar","DigSigService-${project.version}.jar")
 	rename("application.yml.rename","application.yml")
 }
 
-
+/*
 uploadArchives {
 	repositories {
 		mavenDeployer {
@@ -142,6 +133,9 @@ dependencies {
 	implementation group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
 	implementation group: 'com.sun.xml.ws', name: 'jaxws-ri', version: '2.3.4'
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	implementation group: 'ch.qos.logback', name:'logback-classic', version: '1.2.3'
+	implementation group: 'ch.qos.logback', name:'logback-core', version: '1.2.3'
 
 	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"

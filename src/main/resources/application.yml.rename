@@ -1,35 +1,40 @@
-#Replace the below place holders
 server:
   #address:
-  port: 8443
+  port: 6443
   sessionTimeout: 30
   ssl:
     key-store: <keyStore>.jks
     key-store-password: <keyStorePwd>
-    #keyStoreType: PKCS12
-    keyAlias: <keyAlias>
+    key-alias: <keyAlias>
     key-password: <keyPassword>
-    keyPassword: <keyPassword>
-    trust-store: <truststore>.jks
+    trust-store: <trustStore>.jks
     trust-store-password: <trustStorePwd>
-local.management.port: 9001
-local.management.address: 127.0.0.1
-management.security.enabled: false
-multipart:
-  max-file-size: 20Mb
-  max-request-size: 21Mb
+    protocol: TLS
+  tomcat:
+    max-threads: 200
+    basedir: ./	
 logging:
   path: logs/
-  file: logs/digsig-service.log
+  file: logs/<fileName>.log
 spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 21MB
   datasource:
     url: jdbc:sqlserver://<server>\<instance>;DatabaseName=<databasename>
     username: <username>
     password: <password>
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info
 digsig:
   instance: 
   hostnameVerification: 
+  wdslURL: https://twod-test.trustweaver.com/ts/svs.asmx?wsdl
   trustweaver:
     keystore: <keyStore>.pfx
     keystoreType: PKCS12

@@ -11,7 +11,7 @@ stages:
     pool:
       name: GRC-ELM-CP-Build-Pool
       demands:
-      - Agent.Name -equals cp-build
+        - Agent.Tag -equals cp-build
     steps:
     - script: 'cp /root/.embedmongo/gradlew .'
     - task: Gradle@2

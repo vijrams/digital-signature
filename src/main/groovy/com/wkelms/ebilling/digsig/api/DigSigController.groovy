@@ -91,7 +91,7 @@ class DigSigController {
     }
 
     @RequestMapping(path = "/digital_signatures/validate", method = RequestMethod.POST, produces = MediaType.APPLICATION_XML_VALUE)
-    String validateLegacy(@RequestParam("file") MultipartFile signedInvoice,
+    String validateLegacy(@RequestParam("file") String signedInvoice,
                           @RequestParam("sender_country") String senderCountry,
                           @RequestParam("recipient_country") String clientCountry,
                           @RequestParam("law_id") String lawId) {
@@ -135,7 +135,7 @@ class DigSigController {
     }
 
     @RequestMapping(path = "/digital_signatures/validate_archive", method = RequestMethod.POST, produces = MediaType.APPLICATION_XML_VALUE)
-    String validateArchiveLegacy(@RequestParam("file") MultipartFile signedInvoice) {
+    String validateArchiveLegacy(@RequestParam("file") String signedInvoice) {
         log.info("ValidateArchive Signed Invoice -legacy")
         try {
             if (signedInvoice.isEmpty()) {

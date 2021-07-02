@@ -74,7 +74,8 @@ bootJar {
 	mainClassName = 'com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication'
 	exclude ("*.jks")
 	exclude ("*.yml*")
-	exclude ("*.xml")
+	exclude ("*.pfx")
+	exclude ("*.bat")
 	exclude ("*.exe")
 }
 

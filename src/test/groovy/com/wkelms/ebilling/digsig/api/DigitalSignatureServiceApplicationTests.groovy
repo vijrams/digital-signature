@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.context.WebApplicationContext
 
@@ -215,9 +216,8 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 	void test050ValidateInvoiceLegacy() {
 		MockMultipartFile multiPartFile = getMockMultiPartFile("file", "LEDES98_SIGNED")
 		MultiValueMap<String, String> nMap = getDefaultParams("VALIOLD")
-
+		nMap.add("file", new String(multiPartFile.getBytes(),"UTF-8"))
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/digital_signatures/validate")
-				.file(multiPartFile)
 				.params(nMap)
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
@@ -236,7 +236,7 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
 				.andExpect(xpath("/ValidationResponse/status").string("Unknown"))
-				.andExpect(xpath("/ValidationResponse/desc").string("Required request part 'file' is not present"))
+				.andExpect(xpath("/ValidationResponse/desc").string("Required request parameter 'file' for method parameter type String is not present"))
 	}
 
 	@Test
@@ -244,9 +244,9 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 		MockMultipartFile multiPartFile = getMockMultiPartFile("file", "LEDES98_SIGNED")
 		MultiValueMap<String, String> nMap = getDefaultParams("VALIOLD")
 		nMap.remove("sender_country")
+		nMap.add("file", new String(multiPartFile.getBytes(),"UTF-8"))
 
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/digital_signatures/validate")
-				.file(multiPartFile)
 				.params(nMap)
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isBadRequest())
@@ -260,9 +260,9 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 		MockMultipartFile multiPartFile = getMockMultiPartFile("file", "LEDES98_SIGNED")
 		MultiValueMap<String, String> nMap = getDefaultParams("VALIOLD")
 		nMap.add("sender_country", "USA1")
+		nMap.add("file", new String(multiPartFile.getBytes(),"UTF-8"))
 
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/digital_signatures/validate")
-				.file(multiPartFile)
 				.params(nMap)
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
@@ -275,9 +275,9 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 	void test054ValidateInvoiceLegacyWrongFile() {
 		MockMultipartFile multiPartFile = getMockMultiPartFile("file", "LEDES_SIGNED_BAD")
 		MultiValueMap<String, String> nMap = getDefaultParams("VALIOLD")
+		nMap.add("file", new String(multiPartFile.getBytes(),"UTF-8"))
 
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/digital_signatures/validate")
-				.file(multiPartFile)
 				.params(nMap)
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
@@ -290,9 +290,11 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 	@Test
 	void test060ValidateArchiveLegacy() {
 		MockMultipartFile multiPartFile = getMockMultiPartFile("file", "LEDES98_SIGNED")
+		MultiValueMap<String, String> nMap = new LinkedMultiValueMap<String, Object>()
+		nMap.add("file", new String(multiPartFile.getBytes(),"UTF-8"))
 
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/digital_signatures/validate_archive")
-				.file(multiPartFile)
+				.params(nMap)
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
@@ -308,7 +310,7 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML))
 				.andExpect(xpath("/ValidationResponse/status").string("Unknown"))
-				.andExpect(xpath("/ValidationResponse/desc").string("Required request part 'file' is not present"))
+				.andExpect(xpath("/ValidationResponse/desc").string("Required request parameter 'file' for method parameter type String is not present"))
 	}
 
 	@Test
@@ -349,9 +351,9 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 	void test072ValidateXMLInvoiceLegacy() {
 		MockMultipartFile multiPartFile = getMockMultiPartFile("file", "LEDESXML_SIGNED")
 		MultiValueMap<String, String> nMap = getDefaultParams("VALIOLD")
+		nMap.add("file", new String(multiPartFile.getBytes(),"UTF-8"))
 
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/digital_signatures/validate")
-				.file(multiPartFile)
 				.params(nMap)
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())

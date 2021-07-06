@@ -78,8 +78,10 @@ class DigSigController {
        catch (Exception e) {
             log.error("Message = "+e.message +" stackTrace = "+e.stackTrace)
             def json = createJson(e)
-            return ResponseEntity.badRequest()
-                    .contentType(MediaType.APPLICATION_JSON)
+           def re = ResponseEntity.badRequest()
+           if(e.message =="Invalid Country Code, Expecting 2/3 letter ISO Country Codes")
+               re = ResponseEntity.unprocessableEntity()
+            return re.contentType(MediaType.APPLICATION_JSON)
                     .body(json)
         }
     }

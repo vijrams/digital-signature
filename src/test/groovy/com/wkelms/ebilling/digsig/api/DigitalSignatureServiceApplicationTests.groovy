@@ -112,7 +112,7 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.file(multiPartFile)
 				.params(nMap)
 				.characterEncoding("UTF-8"))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isUnprocessableEntity())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("error").value("Invalid Country Code, Expecting 2/3 letter ISO Country Codes"))
 	}

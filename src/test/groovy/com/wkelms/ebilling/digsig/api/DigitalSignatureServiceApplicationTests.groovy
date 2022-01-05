@@ -373,8 +373,8 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.characterEncoding("UTF-8"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("code").value("SignerInvalid"))
-				.andExpect(jsonPath("desc").value("The signing certificate is issued under a policy which is unknown"))
+				.andExpect(jsonPath("code").value("SignatureInvalid"))
+				.andExpect(jsonPath("desc").value("The document signature is invalid"))
 	}
 
 }

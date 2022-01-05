@@ -7,7 +7,6 @@ import com.wkelms.ebilling.digsig.api.trustweaver.ValidateArchiveRequest
 import com.wkelms.ebilling.digsig.api.trustweaver.ValidateRequest
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
-import org.apache.tomcat.util.json.JSONParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service

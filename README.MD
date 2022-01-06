@@ -1,5 +1,5 @@
 # Digital Signature Microservice
-[![Build Status](https://dev.azure.com/GRC-ELM/Collaboration%20Portal/_apis/build/status/CPS-InvoiceReceiver?branchName=master)](https://dev.azure.com/GRC-ELM/Collaboration%20Portal/_build/latest?definitionId=141&branchName=master)
+[![Build Status](https://dev.azure.com/GRC-ELM/Collaboration%20Portal/_apis/build/status/CPS-DigitalSignature?branchName=main)](https://dev.azure.com/GRC-ELM/Collaboration%20Portal/_build/latest?definitionId=148&branchName=main)
 [![version](https://img.shields.io/badge/Ver-1.5.0.snapshot-blue.svg)]()
 
 This project uses Spring Boot to implement the service that

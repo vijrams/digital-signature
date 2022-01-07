@@ -137,9 +137,7 @@ dependencies {
 	implementation group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
 	implementation group: 'com.sun.xml.ws', name: 'jaxws-ri', version: '2.3.4'
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-
-	implementation group: 'ch.qos.logback', name:'logback-classic', version: '1.2.3'
-	implementation group: 'ch.qos.logback', name:'logback-core', version: '1.2.3'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.1'
 
 	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"

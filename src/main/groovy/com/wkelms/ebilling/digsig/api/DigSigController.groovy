@@ -103,7 +103,7 @@ class DigSigController {
                 log.error("No Signed Invoice Selected")
                 throw new Exception("No Signed Invoice Selected")
             }
-            def resp = digSigService.validate(signedInvoice.bytes,senderCountry,clientCountry,true)
+            def resp = digSigService.validate(signedInvoice.getBytes("UTF-8"),senderCountry,clientCountry,true)
             resp
         }catch (Exception e) {
             digSigService.legacyResponse(null,"Unknown", e.message)

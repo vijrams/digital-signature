@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.6.2'
+		springBootVersion = '2.6.4'
 
 	}
 	repositories {
@@ -16,13 +16,10 @@ buildscript {
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.6.2'
+	id 'org.springframework.boot' version '2.6.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'groovy'
 }
-
-version = '1.6.0'
-sourceCompatibility = '11'
 
 repositories {
 	mavenLocal()
@@ -32,43 +29,8 @@ repositories {
 	mavenCentral()
 }
 
-configurations {
-	jaxws
-}
-
-task wsimport {
-	def wsdlURL = "https://twod-test.trustweaver.com/ts/svs.asmx?wsdl"
-	String keyStore = "${projectDir}/src/test/resources/tw_keystore_stag_2021.pfx"
-	String trustStore = "${projectDir}/src/test/resources/tw_truststore_stg.jks"
-	ext.destDir = file("${projectDir}/src/main/java")
-	System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
-	System.setProperty('javax.net.ssl.keyStore', keyStore)
-	System.setProperty('javax.net.ssl.keyStorePassword', 'datacert')
-	System.setProperty('javax.net.ssl.trustStore', trustStore)
-	System.setProperty('javax.net.ssl.trustStorePassword', 'datacert')
-	try {
-		doLast {
-			ant {
-				sourceSets.main.output.classesDirs.inits()
-				destDir.mkdirs()
-				taskdef(name: 'wsimport',
-						classname: 'com.sun.tools.ws.ant.WsImport',
-						classpath: configurations.jaxws.asPath
-				)
-				wsimport(keep: true,
-						sourcedestdir: 'src/main/java',
-						xnocompile: 'true',
-						package: "com.wkelms.ebilling.digsig.api.trustweaver",
-						wsdl: wsdlURL) {
-					xjcarg(value: "-XautoNameResolution")
-				}
-			}
-		}
-	}catch(Exception ex) {
-		println ex
-	}
-}
-
+version = '1.6.1'
+sourceCompatibility = 11
 
 bootJar {
 	mainClass.set('com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication')
@@ -79,51 +41,16 @@ bootJar {
 	exclude ("*.exe")
 }
 
-
 task dist(type: Copy, dependsOn: bootJar) {
-	def keyStore = "tw_keystore_stag_2021.pfx"
-	def trustStore = "tw_truststore_stg.jks"
 	def distDir = file ('build/dist/')
 	distDir.mkdir()
 	from 'build/libs'
-	from 'src/main/resources'
 	into 'build/dist'
-	include "application.yml.rename"
-	include "$keyStore"
-	include "$trustStore"
-	include "keystore.jks"
-	include "logback.xml"
 	include "${project.name}-${project.version}.jar"
-	rename("${project.name}-${project.version}.jar","DigSigService-${project.version}.jar")
-	rename("application.yml.rename","application.yml")
+	rename("${project.name}-${project.version}.jar","InvoiceReceiver-${project.version}.jar")
 }
-
-/*
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			repository(url: "https://nexus.wkelms.com/repository/cp-releases/") {
-				authentication(userName: "deployment", password: "datacert")
-			}
-			snapshotRepository(url: "https://nexus.wkelms.com/repository/cp-snapshots/") {
-				authentication(userName: "deployment", password: "datacert")
-			}
-			println "Uploading DigSigService-$version to Nexus Repo"
-			pom.version = "$version"
-			pom.artifactId = "DigSigService"
-			pom.groupId = "com.wkelms.ebilling.digsig"
-		}
-	}
-}
-
-
- */
-
 
 dependencies {
-
-	jaxws 'com.sun.xml.ws:jaxws-tools:2.3.0'
-
 	implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.8'
 	implementation group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.8'
 	implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}"){
@@ -141,40 +68,6 @@ dependencies {
 
 	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"
-	testImplementation group: 'com.h2database', name: 'h2', version: '2.0.204'
+	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.210'
 
-
-/*
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.11'
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-	compile group: 'commons-io', name: 'commons-io', version: '2.7'
-	compile group: 'com.microsoft.sqlserver', name: 'sqljdbc4', version: '4.0'
-
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-
-
- */
 }
-/*
-sonarqube {
-	properties {
-		property "sonar.sourceEncoding", "UTF-8"
-		property "sonar.sources", "src"
-		property "sonar.exclusions", "src/test/groovy/**"
-	}
-}
-
-compileJava {
-	dependsOn wsimport
-	source wsimport.destDir
-}
-test {
-	useJUnitPlatform()
-}
-
-
- */

@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.6.6'
+		springBootVersion = '2.6.7'
 
 	}
 	repositories {
@@ -16,12 +16,12 @@ buildscript {
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.6.6'
+	id 'org.springframework.boot' version '2.6.7'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'groovy'
 }
 
-version = '1.6.1'
+version = '1.6.2'
 sourceCompatibility = '11'
 
 repositories {

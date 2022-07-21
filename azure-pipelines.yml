@@ -1,29 +1,28 @@
 trigger:
   branches:
     include:
-    - '*'
+      - '*'
 
 stages:
-- stage: build
-  displayName: Build Stage
-  jobs:
-  - job: build
-    pool:
-      name: GRC-ELM-CP-Build-Pool
-      demands:
-        - Agent.Tag -equals cp-build
-    steps:
-    - script: 'cp /root/.embedmongo/gradlew .'
-    - task: Gradle@2
-      continueOnError: true
-      inputs:
-        gradleWrapperFile: 'gradlew'
-        tasks: 'clean build'
-        publishJUnitResults: false
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'
-        ArtifactName: 'results'
-        publishLocation: 'Container'
-        StoreAsTar: true
-        
+  - stage: build
+    displayName: Build Stage
+    jobs:
+      - job: build
+        pool:
+          name: GRC-ELM-CP-Build-Pool
+          demands:
+            - Agent.Tag -equals cp-build
+        steps:
+          - script: 'cp /root/.embedmongo/gradlew .'
+          - task: Gradle@2
+            continueOnError: true
+            inputs:
+              gradleWrapperFile: 'gradlew'
+              tasks: 'clean build dist'
+              publishJUnitResults: false
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(System.DefaultWorkingDirectory)/build/reports/tests/test'
+              ArtifactName: 'results'
+              publishLocation: 'Container'
+              StoreAsTar: true

@@ -19,6 +19,7 @@ plugins {
 	id 'org.springframework.boot' version '2.6.7'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'groovy'
+	id 'com.google.cloud.tools.jib' version '3.2.0'
 }
 
 version = '1.6.2'
@@ -121,4 +122,31 @@ dependencies {
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "${springBootVersion}"
 	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.210'
 
+}
+
+tasks {
+    build {
+        dependsOn(tasks.jib)
+    }
+}
+
+jib {
+    from {
+        image = 'amazoncorretto:11-alpine'
+    }
+    to {
+        image = 'zusscrndacrcp.azurecr.io/cp-digital-signature'
+        auth{
+            username = 'zusscrndacrcp'
+            password = 'RU5d5+6Ru191mmP8hphwJXDTxbxJekfH' 
+        }        
+        tags = ['latest', project.version]
+    }
+    container {
+        appRoot = '/cp-digital-signature'
+        jvmFlags = ['-Xms360m', '-Xmx360m']
+        ports = ['8080']
+        workingDirectory = '/cp-digital-signature'
+    }
+    allowInsecureRegistries = true
 }

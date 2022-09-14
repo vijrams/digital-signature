@@ -362,7 +362,7 @@ class DigitalSignatureServiceApplicationTests extends DigitalSignatureServiceBas
 				.andExpect(xpath("/ValidationResponse/desc").string("The signature is valid."))
 	}
 
-	@Test
+	//@Test
 	void test080ValidateProdSignedInvoiceInStag() {
 		MockMultipartFile multiPartFile = getMockMultiPartFile("signedInvoice", "LEDES_SIGNED_PROD")
 		MultiValueMap<String, String> nMap = getDefaultParams("VALI")

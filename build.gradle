@@ -22,7 +22,7 @@ plugins {
 	id 'com.google.cloud.tools.jib' version '3.2.0'
 }
 
-version = '1.6.2'
+version = '1.6.3'
 sourceCompatibility = '11'
 
 repositories {
@@ -144,7 +144,7 @@ jib {
     }
     container {
         appRoot = '/cp-digital-signature'
-        jvmFlags = ['-Xms360m', '-Xmx360m']
+        jvmFlags = ['-Xms360m', '-Xmx360m', '-javaagent:/cp-digital-signature/glowroot/glowroot.jar']
         ports = ['8080']
         workingDirectory = '/cp-digital-signature'
     }

@@ -21,6 +21,9 @@ plugins {
 	id 'groovy'
 }
 
+version = '1.6.0'
+sourceCompatibility = '11'
+
 repositories {
 	mavenLocal()
 	maven{
@@ -29,8 +32,43 @@ repositories {
 	mavenCentral()
 }
 
-version = '1.6.1'
-sourceCompatibility = 11
+configurations {
+	jaxws
+}
+
+task wsimport {
+	def wsdlURL = "https://twod-test.trustweaver.com/ts/svs.asmx?wsdl"
+	String keyStore = "${projectDir}/src/test/resources/tw_keystore_stag_2021.pfx"
+	String trustStore = "${projectDir}/src/test/resources/tw_truststore_stg.jks"
+	ext.destDir = file("${projectDir}/src/main/java")
+	System.setProperty('javax.net.ssl.keyStoreType', 'pkcs12')
+	System.setProperty('javax.net.ssl.keyStore', keyStore)
+	System.setProperty('javax.net.ssl.keyStorePassword', 'datacert')
+	System.setProperty('javax.net.ssl.trustStore', trustStore)
+	System.setProperty('javax.net.ssl.trustStorePassword', 'datacert')
+	try {
+		doLast {
+			ant {
+				sourceSets.main.output.classesDirs.inits()
+				destDir.mkdirs()
+				taskdef(name: 'wsimport',
+						classname: 'com.sun.tools.ws.ant.WsImport',
+						classpath: configurations.jaxws.asPath
+				)
+				wsimport(keep: true,
+						sourcedestdir: 'src/main/java',
+						xnocompile: 'true',
+						package: "com.wkelms.ebilling.digsig.api.trustweaver",
+						wsdl: wsdlURL) {
+					xjcarg(value: "-XautoNameResolution")
+				}
+			}
+		}
+	}catch(Exception ex) {
+		println ex
+	}
+}
+
 
 bootJar {
 	mainClass.set('com.wkelms.ebilling.digsig.api.DigitalSignatureServiceApplication')
@@ -41,16 +79,29 @@ bootJar {
 	exclude ("*.exe")
 }
 
+
 task dist(type: Copy, dependsOn: bootJar) {
+	def keyStore = "tw_keystore_stag_2021.pfx"
+	def trustStore = "tw_truststore_stg.jks"
 	def distDir = file ('build/dist/')
 	distDir.mkdir()
 	from 'build/libs'
+	from 'src/main/resources'
 	into 'build/dist'
+	include "application.yml.rename"
+	include "$keyStore"
+	include "$trustStore"
+	include "keystore.jks"
+	include "logback.xml"
 	include "${project.name}-${project.version}.jar"
-	rename("${project.name}-${project.version}.jar","InvoiceReceiver-${project.version}.jar")
+	rename("${project.name}-${project.version}.jar","DigSigService-${project.version}.jar")
+	rename("application.yml.rename","application.yml")
 }
 
 dependencies {
+
+	jaxws 'com.sun.xml.ws:jaxws-tools:2.3.0'
+
 	implementation group: 'org.codehaus.groovy', name: 'groovy', version: '3.0.8'
 	implementation group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.8'
 	implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}"){

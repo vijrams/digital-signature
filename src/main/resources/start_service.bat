@@ -1,1 +1,0 @@
-java -jar DigSigService-0.0.1-SNAPSHOT.jar
